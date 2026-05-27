@@ -1,0 +1,41 @@
+May 22
+The ultimate next goal is to train the CNN. To be able to do that, we need training data, which we have on Roboflow. Each image is categorized by PPM, though not all are true PPM and we need to cross-reference that first. Once the final selection of images are found, we need to crop them based off the main leaf in the image, so as to isolate it and improve training (not inadvertently learning background of image, etc.). Once isolated, we can find those images along with their PPM label as training data into the model.
+
+Right now, I will focus on cross-referencing by looking for a document that lists the filename with the true PPM.
+
+So it turns out there isn't a "true PPM: 395.3" like I was expecting. Instead, since in ICP-OES, the leaf is digested, it just measured how much copper (pesticide) is left in the liquid as mg/L. In water, there is a 1 to 1 ratio between mg/L and PPM, and this is no different. So for an example image, ICP_400ppm_1_jpg, the reported copper concentration is 2.236 mg/L. So the *liquid* (digestion solution) left over from the digested leaf has 2.236 PPM.
+
+Though, I have not yet fully understood why there's a difference between digestion solution PPM and leaf PPM. Clearly, the ICP machine does not directly measure leaf PPM, but rather how much copper ended up in the liquid after digesting the leaf sample. And I guess a spray may have 400 PPM, but what is left on that leaf, and then left in the liquid that digested it, ended up being vastly lower in this example.
+
+There is no "leaf PPM". There was only treatment spray PPM (e.g. a spray of 400 PPM copper concentration), which deposes a certain amount on each leaf. This amount gets measured via ICP, which ends up being much lower (e.g. 2.236 mg/L). Since this of course is not compatible with the original bins of 200-400, 400-600, etc., then we must remap the bins to the residue pesticide. Luckily, we also have the leaf area in cm^2, so we can convert the mg/L of copper to mg/cm^2, effectively deriving a new measurement of copper content over leaf area. This comes from multiplying the mg/L concentration by 5 (likely dilution factor), then by the 30 mL (0.03) digestion liquid volume. So for the example of 2.236 mg/L: 5 x 2.236 x 0.03 L = 0.3354 mg, then using the leaf area of 4.1903 cm^2: 0.3354/4.1903 = 0.080042 mg/cm^2. 
+So our model will not predict spray PPM, it will predict ICP-derived copper residue level or leaf-surface copper residue bin.
+"Although image filenames indicate nominal spray concentration, these values represent treatment groups rather than measured residue. Because actual deposition varies substantially across leaves, ICP-derived residue density in mg/cm² should be used as the ground-truth label. For classification, continuous residue values can be discretized into low, medium and high residue bins."
+
+
+I will now work on programmatically taking an image file name, mapping that to the excel, converting the associated leaf's copper content into mg/cm^2, and writing that to a master excel of image and label, for use as training data. I can later inspect this excel to determine the best distribution of bins.
+e.g.
+| Image                | ICP-derived residue | Bin    |
+| -------------------- | ------------------- | ------ |
+| cropped_leaf_001.png | 0.080042 mg/cm²     | medium |
+| cropped_leaf_002.png | 0.047509 mg/cm²     | low    |
+| cropped_leaf_003.png | 0.096664 mg/cm²     | high   |
+instead of
+| Image    | Nominal spray |
+| -------- | ------------- |
+| leaf.png | 400 ppm       |
+
+
+Having coded the file, I realized I could inspect the already-existed excel to find the distribution of mg/cm2. I found the following:
+| Nominal Spray | Avg mg/cm² | Std Dev |
+| ------------- | ---------: | ------: |
+| 400           |      0.074 |   0.017 |
+| 600           |      0.116 |   0.044 |
+| 800           |      0.127 |   0.059 |
+| 1000          |      0.178 |   0.053 |
+This shows a monotonic relationship between nominal treatment, but with a strong overlap between 600 and 800, and the std devs are huge, meaning many 600 samples likely exceed 800 samples. So again, a classifier forced to separate these bins/classes will surely struggle.
+400 and 1000 are much more separable, with over 2x the average mg/cm2. So I am considering creating bins based on this distribution, with 3 bins:
+| Bin            | Meaning                     |
+| -------------- | --------------------------- |
+| Low residue    | insufficient/light coverage |
+| Medium residue | moderate coverage           |
+| High residue   | strong/heavy coverage       |

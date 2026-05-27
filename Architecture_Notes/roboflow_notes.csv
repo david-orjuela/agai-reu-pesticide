@@ -1,0 +1,2 @@
+file_name, correction_type, x, y, w, h, notes
+ICP_..., manual_bbox, 120, 430, 900, 1600, main leaf missing from Roboflow annotations
