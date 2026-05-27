@@ -1,0 +1,69 @@
+May 26th
+
+-----------------------------------------------------
+Binning notes:
+
+BEST FIRST BASELINE
+3 quantile bins (tertiles)
+
+Because:
+
+balanced
+simple
+robust
+easy to explain scientifically
+SECOND EXPERIMENT
+K-means bins
+
+Because:
+
+distribution-aware
+potentially more physically meaningful
+
+-----------------------------------------------------
+Preprocessing notes:
+
+The file that links an image to its ground truth excel and maps them is complete. The only missing step is the preprocessing of the dataset image itself. That is, isolating the correct leaf and isolating it. This ensures it is trainable (does not learn background, etc.). The only issue is how to decide which leaf to isolate among many of them. In each dataset image, the ICP'd leaf is roughly center and held next to a test tube with the nominal treatment PPM written on it. 
+
+As these images are annotated and masked on Roboflow, I am going to explore using the largest-area mask as what defines "the leaf" that is paired with the ICP measurement. Since there are only 36 images in this dataset, verifying that they are all correct should be trivial. Though, in some cases, it is hard even for me to visually identify the main leaf, given that in all images they are surrounded by various other leaves (in some cases, they are also centered and large).
+
+Each Roboflow annotation has two classes: leaf and residue. Annotators annotated both the leaf itself and the residue on it. Since surrounding leaves were included, I cannot simply isolate the annotation. I'm not sure why these were included, but anything other than the ICP'd images would be pure noise. 
+
+-----------------------------------------------------
+
+Prompt info:
+Okay help me write a file:
+I am going to feed you (for now) a JSON whose path is "\mnt\c\Users\david\OneDrive - University of Central Florida\AgAI_REU_2026\Datasets\AgAI Correct\V3 - 2026-03-25 1415\COCO JSON Masks\train\annotation_image.json"
+
+It's a long JSON that has 4 keys: boxes is the one we care about (json[0]). Its value is a list (array) of dictionaries, where each dict is a bounding box of an annotation. These dicts look like:
+"type": "polygon",
+            "label": "leaf",
+            "x": 1301.538,
+            "y": 2376,
+            "width": 1429,
+            "height": 1560,
+"points": [list of lists, where the inner lists are of style: [
+                    183,
+                    1328
+                ],]
+I am assuming the points are x,y (183 and 1328 respectively in the example) of the leaf being masked, in this case. The annotators were encircling the leaf, and those points are each of the clicks they made surrounding the leaf.
+
+There are also label "residue", but for right now, we are only caring about the leaf, so type "leaf". For a given JSON of this style, I want you to iterate through boxes and find which box of type leaf has the largest area (width * height). Once found, I want to overlay this ONE box over the "original" image, where x and y are the CENTER of the width, height bounding box. You can ignore the points for the purposes of drawing. In fact we're not using them at all, so that should make things easier. 
+
+-----------------------------------------------------
+
+I was able to successfully use the biggest leaf in each image to be the actual intended main leaf. Out of the 36 photos, only 4 had errors. 3 had the intended leaf be the second biggest in terms of area, while one simply never had the main leaf annotated.
+
+To train ResNet, I am going to test two versions:
+
+Version A: bounding-box crop
+This keeps natural context around the leaf and is simpler
+
+Version B: masked crop
+This removes background/test tube/neighboring leaves and forces the model to focus on the selected leaf.
+
+If masked crop performs better, that supports the idea that leaf-only visual features are useful.
+
+For the future inference pipeline, I will am looking at:
+
+New image → segmentation model detects leaf/leaves → choose main/front/large leaf → crop/isolate → classifier predicts PPM bin

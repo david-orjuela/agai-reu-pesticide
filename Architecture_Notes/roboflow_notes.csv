@@ -1,3 +1,5 @@
 file_name, correction_type, x, y, w, h, notes
 ICP_400ppm_2_jpg.rf.e565865954816342374137255e987f74.jpg, manual_bbox,588,909,1112,1585, main leaf missing from Roboflow annotations
 ICP_600ppm_3_jpg.rf.f824ab9238a2b11e44f40fecdfa4190d.jpg,wrong_bbox,819,1930,896,1569,main leaf is not biggest; it is 2nd
+ICP_1Kppm_6_jpg.rf.5893bd4a2df9c293aa2564df6978a15d.jpg,wrong_bbox,691,2129,882,1066,main leaf is not biggest; it is 2nd
+ICP_800ppm_9_jpg.rf.7b27b9a5391d6fe2de7fad852c9595a4.jpg,wrong_bbox,442,1649,1120,1468

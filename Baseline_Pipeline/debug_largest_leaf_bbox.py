@@ -7,7 +7,7 @@ import cv2
 JSON_PATH = Path(
     "/mnt/c/Users/david/OneDrive - University of Central Florida/"
     "AgAI_REU_2026/Datasets/AgAI Correct/V3 - 2026-03-25 1415/"
-    "COCO JSON Masks/train/_annotations.coco.json"
+    "COCO JSON Masks/val/_annotations.coco.json"
 )
 
 IMAGE_DIR = JSON_PATH.parent
@@ -16,7 +16,7 @@ OUTPUT_DIR = IMAGE_DIR / "largest_leaf_bbox_debug"
 LEAF_CATEGORY_ID = 1
 
 # Hardcoded debug settings
-TARGET_FILE_NAME = "ICP_600ppm_3_jpg.rf.f824ab9238a2b11e44f40fecdfa4190d.jpg"
+TARGET_FILE_NAME = "ICP_800ppm_9_jpg.rf.7b27b9a5391d6fe2de7fad852c9595a4.jpg"
 TARGET_AREA_RANK = 2  # 1 = biggest, 2 = second biggest, 3 = third biggest, etc.
 
 
