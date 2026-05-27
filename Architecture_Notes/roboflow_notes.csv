@@ -1,2 +1,3 @@
 file_name, correction_type, x, y, w, h, notes
-ICP_..., manual_bbox, 120, 430, 900, 1600, main leaf missing from Roboflow annotations
+ICP_400ppm_2_jpg.rf.e565865954816342374137255e987f74.jpg, manual_bbox,588,909,1112,1585, main leaf missing from Roboflow annotations
+ICP_600ppm_3_jpg.rf.f824ab9238a2b11e44f40fecdfa4190d.jpg,wrong_bbox,819,1930,896,1569,main leaf is not biggest; it is 2nd
