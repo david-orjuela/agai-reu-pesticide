@@ -45,6 +45,9 @@ def calc_bin_tertiles(mg_cm2):
     
 print("Looping through images in dataset...")
 for img in images_folder.rglob("*.jpg"):
+    if "largest_leaf_crop" in img.parts or "largest_leaf_bbox_debug" in img.parts:
+        continue
+
     stem = img.stem  # ICP_800ppm_1_jpg...
     parts = stem.split("_")
 
@@ -65,7 +68,14 @@ for img in images_folder.rglob("*.jpg"):
     area_cm2 = match["Area cm²"].iloc[0]
     mg_cm2 = match["mg / cm²"].iloc[0]
     residue_bin = calc_bin_tertiles(mg_cm2) # puts ppm into 3 bins, tertiles
-    new_image_path = str(img) #load_image_and_mask.py (generate processed image)
+    
+    cropped_img = img.parent / "largest_leaf_crop" / img.name
+
+    if not cropped_img.exists():
+        print(f"Cropped image missing for {img.parent.name}/{img.name}")
+        continue
+
+    new_image_path = str(cropped_img)
 
     new_row = [
         new_image_path,

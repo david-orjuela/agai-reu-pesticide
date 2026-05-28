@@ -16,6 +16,9 @@ H =
 
 import torch
 import torch.nn as nn
+import torchvision.models as models
+
+model_pretrained = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V1)
 
 class baselineCNN(nn.Module):
     def __init__(self, channels = 3, total_features = 0, num_bins = 5):
