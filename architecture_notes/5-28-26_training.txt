@@ -1,0 +1,17 @@
+May 28
+
+Because the ICP-ground-truth dataset is very small (36 images), the initial baseline treats ResNet50 as a frozen feature extractor rather than fully fine-tuning all model weights. The pretrained convolutional backbone is kept fixed, and only the final classification layer is trained to map extracted image features to ICP-derived residue bins. This reduces overfitting risk while providing an initial test of whether visual residue patterns contain enough signal for classification.
+
+
+Three baselines to test our model with only 36 images (resnet 50)
+1. Frozen Resnet 50
+train only final layer
+
+2. Light finetuning
+Unfreeze only last resnet block 
+
+
+
+
+!!!
+Need to create custom Dataset that works with DataLoader
