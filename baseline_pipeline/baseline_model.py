@@ -4,7 +4,7 @@ David Orjuela
 Undergraduate Student under Dr. Chen
 
 Multi-class Classification Problem
-Goal: classify the residual into different ranges, e.g. 0 - 100ml; 100 - 200ml; etc.
+Goal: classify the residual into different ranges, e.g. low, medium, high ICP-derived residue density
 
 Input Image: [] x []
 

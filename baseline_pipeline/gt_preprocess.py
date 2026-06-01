@@ -15,11 +15,11 @@ new_excel_data = [
 ]
 
 # Parse image filename (WSL compatible)
-images_folder =   Path("/mnt/c/Users/david/OneDrive - University of Central Florida/AgAI_REU_2026/Datasets/AgAI Correct/V3 - 2026-03-25 1415/COCO JSON Masks")
+images_folder =   Path("/home/davidorjuela/dev/agai-reu-2026/datasets/agai_correct/v3/coco_json_masks")
 if images_folder.exists():
     print("Images path exists. Continuing...")
 
-icp_path = Path("/mnt/c/Users/david/OneDrive - University of Central Florida/AgAI_REU_2026/Datasets/AgAI Correct/V3 - 2026-03-25 1415/icp_data.csv")
+icp_path = Path("/home/davidorjuela/dev/agai-reu-2026/datasets/agai_correct/v3/icp_data.csv")
 if icp_path.exists():
     print("ICP path exists. Continuing...")
 
