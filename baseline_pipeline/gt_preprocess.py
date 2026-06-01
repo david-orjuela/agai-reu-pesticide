@@ -15,11 +15,11 @@ new_excel_data = [
 ]
 
 # Parse image filename (WSL compatible)
-images_folder =   Path("/home/davidorjuela/dev/agai-reu-2026/datasets/agai_correct/v3/coco_json_masks")
+images_folder =   Path("/home/david/dev/agai-reu-2026/datasets/agai_correct/v3/coco_json_masks")
 if images_folder.exists():
     print("Images path exists. Continuing...")
 
-icp_path = Path("/home/davidorjuela/dev/agai-reu-2026/datasets/agai_correct/v3/icp_data.csv")
+icp_path = Path("/home/david/dev/agai-reu-2026/datasets/agai_correct/v3/icp_data.csv")
 if icp_path.exists():
     print("ICP path exists. Continuing...")
 
@@ -89,7 +89,7 @@ for img in images_folder.rglob("*.jpg"):
 
     new_excel_data.append(new_row)
 
-master_path = Path("master_icp.csv").resolve()
+master_path = Path("/home/david/dev/agai-reu-2026/datasets/agai_correct/v3/master_icp.csv").resolve()
 with open(master_path, 'w', newline='') as file:
     writer = csv.writer(file)
     writer.writerows(new_excel_data)
