@@ -1,0 +1,13 @@
+June 8th
+200 more ICP images are inbound, relighting the fire.
+I will continue exploring options, hypothesizing here on what will improve performance and why, and then testing this as such.
+First up:
+Running repeated stratified splits and reporting mean ± std to compare against my current, seeded, stratified split. 
+
+I hypothesize, given the small dataset size (28 train, 8 val), that running new splits will keep a high training accuracy (model is adept at learning 28 images), while giving us a lower val accuracy more often than a higher. I don't think it will ever do better than 50% val accuracy, since there is no generalization. That would require data augmentation. The more imbalanced the classes are (stratified should prevent this), the worse the val accuracy. Medium class will stay unlearned.
+
+
+After:
+- data augmentation
+- best-checkpoint evaluation
+- 2-bin experiment
