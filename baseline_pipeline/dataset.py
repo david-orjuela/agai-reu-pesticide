@@ -19,18 +19,23 @@ class agai_correct_v3(Dataset):
     def __getitem__(self, idx):
         image = Image.open(self.icp_data["image_path"].iloc[idx]).convert("RGB")
 
-        label = self.icp_data["residue_bin"].iloc[idx] #ground truth bin
+        # Bin Classification:
+        residue_bin = self.icp_data["residue_bin"].iloc[idx]
 
         label_to_int = {
-            "high":2,
-            "medium":1,
-            "low":0,
+            "high": 2,
+            "medium": 1,
+            "low": 0,
         }
-        
-        label = label_to_int[label]
+
+        label = label_to_int[residue_bin]
+
+        # ICP Residue Regression:
+        icp_value = float(self.icp_data["mg_cm2"].iloc[idx])
 
         if self.transform:
             image = self.transform(image)
 
-        return image, label
+        # return image, label      # Bin Classification
+        return image, icp_value    # ICP Residue Regression
     
