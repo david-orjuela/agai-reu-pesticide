@@ -318,3 +318,4 @@ That suggests the ICP tertile boundaries may be cutting through a visually conti
 Stratified 4-fold cross-validation yielded 50.0% ± 12.4% validation accuracy. Since each fold contained only nine validation images, the observed variance corresponds to roughly one image per fold and is therefore not excessive. Performance remained consistently above random chance (33.3%), suggesting the model has learned some ICP-related visual signal. The medium ICP class remains the most difficult category, although unlike earlier experiments, it was correctly predicted in three of four folds, indicating that the class is not entirely unlearnable. Overall, the results suggest that model performance is currently limited more by dataset size than by an inability to extract useful features.
 
 
+
