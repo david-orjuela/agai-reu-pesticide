@@ -22,7 +22,7 @@ from matplotlib import pyplot as plt
 
 from collections import Counter
 
-from baseline_model import frozen_resnet
+from baseline_pipeline.baseline_model import frozen_resnet
 from dataset import agai_correct_v3
 
 # Helper for printing class counts using stratification bins

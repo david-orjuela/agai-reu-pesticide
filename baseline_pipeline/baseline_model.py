@@ -17,6 +17,8 @@ H =
 import torch
 import torch.nn as nn
 import torchvision.models as models
+from transformers import pipeline
+
 
 def frozen_resnet(num_bins=3):
     model_pretrained = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V2)
@@ -30,3 +32,6 @@ def frozen_resnet(num_bins=3):
     model_pretrained.fc = nn.Linear(num_ftrs, num_bins)
 
     return model_pretrained
+
+def frozen_dinoV3():
+    pass
