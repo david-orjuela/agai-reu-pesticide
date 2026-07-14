@@ -22,7 +22,7 @@ from matplotlib import pyplot as plt
 
 from collections import Counter
 
-from baseline_pipeline.baseline_model import frozen_resnet
+from baseline_pipeline.baseline_model import frozen_resnet, frozen_dinoV3
 from dataset import agai_correct_v3
 
 # Helper for printing class counts using stratification bins
@@ -95,8 +95,8 @@ stratify_labels = [
 
 def run_experiment(train_idx, val_idx, fold):
     # model = frozen_resnet(num_bins=3).to(device=device)  # Bin Classification
-    model = frozen_resnet(num_bins=1).to(device=device)    # ICP Residue Regression
-
+    # model = frozen_resnet(num_bins=1).to(device=device)    # ICP Residue Regression
+    model = frozen_dinoV3(num_bins=1).to(device=device)    # DINOv3
     train_subset = Subset(train_dataset, train_idx)
     val_subset = Subset(val_dataset, val_idx)
 

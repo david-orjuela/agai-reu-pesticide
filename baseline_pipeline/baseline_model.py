@@ -19,7 +19,7 @@ import torch.nn as nn
 import torchvision.models as models
 from transformers import pipeline
 
-
+REPO_DIR = ""
 def frozen_resnet(num_bins=3):
     model_pretrained = models.resnet50(weights=models.ResNet50_Weights.IMAGENET1K_V2)
 
@@ -34,4 +34,6 @@ def frozen_resnet(num_bins=3):
     return model_pretrained
 
 def frozen_dinoV3():
-    pass
+    dinov3_vits16 = torch.hub.load(REPO_DIR, 'dinov3_vits16', source='local', weights=>)
+
+    return 
