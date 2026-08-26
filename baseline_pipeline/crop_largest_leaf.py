@@ -6,9 +6,7 @@ import cv2
 
 
 JSON_PATH = Path(
-    "/mnt/c/Users/david/OneDrive - University of Central Florida/"
-    "AgAI_REU_2026/Datasets/AgAI Correct/V3 - 2026-03-25 1415/"
-    "COCO JSON Masks/train/_annotations.coco.json"
+    "/home/davidorjuela/dev/agai-reu-pesticide/datasets/agai_correct/batch_2_v1/coco/train/_annotations.coco.json"
 )
 
 IMAGE_DIR = JSON_PATH.parent
