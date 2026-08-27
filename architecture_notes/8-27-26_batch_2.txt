@@ -1,0 +1,1150 @@
+August 27th, 2026
+Edited preprocessing files to accept incoming batch of 210 ICP samples, 10 of which are control group.
+
+2 rows in data are NaN: c1, and 600 ppm 2 9.
+
+Area seems to be much bigger in general than the first batch of samples. Worth following up with chem team later.
+
+uv run python -m baseline_pipeline.train
+Currently on cuda
+CSV path exists. Continuing...
+CSV path exists. Continuing...
+
+========== Fold 1 ==========
+Downloading: "https://download.pytorch.org/models/resnet50-11ad3fa6.pth" to /home/davidorjuela/.cache/torch/hub/checkpoints/resnet50-11ad3fa6.pth
+100%|███████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████████| 97.8M/97.8M [00:01<00:00, 55.1MB/s]
+
+Train stratification-bin counts:
+  low (0): 52
+  medium (1): 51
+  high (2): 53
+
+Validation stratification-bin counts:
+  low (0): 17
+  medium (1): 18
+  high (2): 17
+
+Epoch [1/30] - Train Loss: 1.4356 - Train MAE: 1.8850 - Train RMSE: 2.3452 - Val Loss: 1.2008 - Val MAE: 1.6390 - Val RMSE: 2.4182 - Val R²: -0.2067
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.1946
+Pred std:    0.5714
+Pearson r: -0.0363
+Baseline MAE: 1.5124
+Epoch [2/30] - Train Loss: 1.0182 - Train MAE: 1.4467 - Train RMSE: 1.7737 - Val Loss: 1.1314 - Val MAE: 1.5521 - Val RMSE: 2.3623 - Val R²: -0.1516
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.2338
+Pred std:    0.5855
+Pearson r: 0.0518
+Baseline MAE: 1.5124
+Epoch [3/30] - Train Loss: 1.0632 - Train MAE: 1.5069 - Train RMSE: 1.7907 - Val Loss: 1.1179 - Val MAE: 1.5523 - Val RMSE: 2.3367 - Val R²: -0.1268
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.0999
+Pred std:    0.5280
+Pearson r: 0.1728
+Baseline MAE: 1.5124
+Epoch [4/30] - Train Loss: 0.9603 - Train MAE: 1.3860 - Train RMSE: 1.7306 - Val Loss: 1.0805 - Val MAE: 1.5165 - Val RMSE: 2.2946 - Val R²: -0.0865
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.1481
+Pred std:    0.5490
+Pearson r: 0.2230
+Baseline MAE: 1.5124
+Epoch [5/30] - Train Loss: 0.9302 - Train MAE: 1.3635 - Train RMSE: 1.6519 - Val Loss: 1.0241 - Val MAE: 1.4619 - Val RMSE: 2.2500 - Val R²: -0.0446
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.1765
+Pred std:    0.6289
+Pearson r: 0.2856
+Baseline MAE: 1.5124
+Epoch [6/30] - Train Loss: 0.8840 - Train MAE: 1.3145 - Train RMSE: 1.6566 - Val Loss: 1.0311 - Val MAE: 1.4611 - Val RMSE: 2.2240 - Val R²: -0.0207
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.1116
+Pred std:    0.6619
+Pearson r: 0.3622
+Baseline MAE: 1.5124
+Epoch [7/30] - Train Loss: 0.8382 - Train MAE: 1.2541 - Train RMSE: 1.5960 - Val Loss: 0.9696 - Val MAE: 1.4108 - Val RMSE: 2.1519 - Val R²: 0.0444
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.3603
+Pred std:    0.7129
+Pearson r: 0.3445
+Baseline MAE: 1.5124
+Epoch [8/30] - Train Loss: 0.9090 - Train MAE: 1.3405 - Train RMSE: 1.6652 - Val Loss: 0.9885 - Val MAE: 1.4183 - Val RMSE: 2.1042 - Val R²: 0.0863
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.6574
+Pred std:    0.7366
+Pearson r: 0.3242
+Baseline MAE: 1.5124
+Epoch [9/30] - Train Loss: 0.8570 - Train MAE: 1.2782 - Train RMSE: 1.6395 - Val Loss: 0.9937 - Val MAE: 1.4320 - Val RMSE: 2.1914 - Val R²: 0.0091
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.1533
+Pred std:    0.7457
+Pearson r: 0.3802
+Baseline MAE: 1.5124
+Epoch [10/30] - Train Loss: 0.7802 - Train MAE: 1.2035 - Train RMSE: 1.4943 - Val Loss: 0.9610 - Val MAE: 1.4013 - Val RMSE: 2.1328 - Val R²: 0.0613
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.2916
+Pred std:    0.7366
+Pearson r: 0.3961
+Baseline MAE: 1.5124
+Epoch [11/30] - Train Loss: 0.8354 - Train MAE: 1.2572 - Train RMSE: 1.5660 - Val Loss: 0.9230 - Val MAE: 1.3453 - Val RMSE: 2.0099 - Val R²: 0.1664
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.7911
+Pred std:    0.8019
+Pearson r: 0.4185
+Baseline MAE: 1.5124
+Epoch [12/30] - Train Loss: 0.7757 - Train MAE: 1.1901 - Train RMSE: 1.4725 - Val Loss: 0.9309 - Val MAE: 1.3532 - Val RMSE: 2.0380 - Val R²: 0.1429
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.7615
+Pred std:    0.7709
+Pearson r: 0.3905
+Baseline MAE: 1.5124
+Epoch [13/30] - Train Loss: 0.7373 - Train MAE: 1.1442 - Train RMSE: 1.4679 - Val Loss: 0.9711 - Val MAE: 1.3849 - Val RMSE: 2.0677 - Val R²: 0.1178
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.8475
+Pred std:    0.9917
+Pearson r: 0.3588
+Baseline MAE: 1.5124
+Epoch [14/30] - Train Loss: 0.7615 - Train MAE: 1.1883 - Train RMSE: 1.4492 - Val Loss: 0.9613 - Val MAE: 1.3847 - Val RMSE: 2.0518 - Val R²: 0.1313
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.7100
+Pred std:    0.7568
+Pearson r: 0.3813
+Baseline MAE: 1.5124
+Epoch [15/30] - Train Loss: 0.7439 - Train MAE: 1.1558 - Train RMSE: 1.4748 - Val Loss: 0.9980 - Val MAE: 1.4231 - Val RMSE: 2.1151 - Val R²: 0.0769
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.5445
+Pred std:    0.7531
+Pearson r: 0.3351
+Baseline MAE: 1.5124
+Epoch [16/30] - Train Loss: 0.7834 - Train MAE: 1.2000 - Train RMSE: 1.4990 - Val Loss: 0.9546 - Val MAE: 1.3856 - Val RMSE: 2.0329 - Val R²: 0.1472
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.9313
+Pred std:    0.9222
+Pearson r: 0.3853
+Baseline MAE: 1.5124
+Epoch [17/30] - Train Loss: 0.7336 - Train MAE: 1.1365 - Train RMSE: 1.4519 - Val Loss: 0.9458 - Val MAE: 1.3827 - Val RMSE: 2.0831 - Val R²: 0.1046
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.3907
+Pred std:    0.8118
+Pearson r: 0.4164
+Baseline MAE: 1.5124
+Epoch [18/30] - Train Loss: 0.7277 - Train MAE: 1.1177 - Train RMSE: 1.4533 - Val Loss: 0.9678 - Val MAE: 1.3898 - Val RMSE: 2.0103 - Val R²: 0.1660
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.8666
+Pred std:    0.9085
+Pearson r: 0.4096
+Baseline MAE: 1.5124
+Epoch [19/30] - Train Loss: 0.6828 - Train MAE: 1.0889 - Train RMSE: 1.4035 - Val Loss: 0.8999 - Val MAE: 1.3111 - Val RMSE: 2.0043 - Val R²: 0.1710
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.7542
+Pred std:    0.8532
+Pearson r: 0.4255
+Baseline MAE: 1.5124
+Epoch [20/30] - Train Loss: 0.6515 - Train MAE: 1.0615 - Train RMSE: 1.3493 - Val Loss: 0.9122 - Val MAE: 1.3292 - Val RMSE: 2.0564 - Val R²: 0.1274
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.6067
+Pred std:    0.8996
+Pearson r: 0.3914
+Baseline MAE: 1.5124
+Epoch [21/30] - Train Loss: 0.6523 - Train MAE: 1.0457 - Train RMSE: 1.3628 - Val Loss: 0.9250 - Val MAE: 1.3478 - Val RMSE: 2.0879 - Val R²: 0.1004
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.4889
+Pred std:    0.8180
+Pearson r: 0.3822
+Baseline MAE: 1.5124
+Epoch [22/30] - Train Loss: 0.7195 - Train MAE: 1.1372 - Train RMSE: 1.4215 - Val Loss: 0.9238 - Val MAE: 1.3548 - Val RMSE: 2.0318 - Val R²: 0.1482
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.7970
+Pred std:    0.8771
+Pearson r: 0.3919
+Baseline MAE: 1.5124
+Epoch [23/30] - Train Loss: 0.7167 - Train MAE: 1.1327 - Train RMSE: 1.3972 - Val Loss: 0.9477 - Val MAE: 1.3635 - Val RMSE: 2.0509 - Val R²: 0.1320
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   3.1029
+Pred std:    1.0306
+Pearson r: 0.3797
+Baseline MAE: 1.5124
+Epoch [24/30] - Train Loss: 0.7400 - Train MAE: 1.1551 - Train RMSE: 1.4856 - Val Loss: 1.0557 - Val MAE: 1.4900 - Val RMSE: 2.1172 - Val R²: 0.0750
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   3.2756
+Pred std:    1.0946
+Pearson r: 0.3449
+Baseline MAE: 1.5124
+Epoch [25/30] - Train Loss: 0.6317 - Train MAE: 1.0180 - Train RMSE: 1.3470 - Val Loss: 0.9368 - Val MAE: 1.3721 - Val RMSE: 2.0184 - Val R²: 0.1593
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.7998
+Pred std:    0.8955
+Pearson r: 0.4056
+Baseline MAE: 1.5124
+Epoch [26/30] - Train Loss: 0.7577 - Train MAE: 1.1749 - Train RMSE: 1.4741 - Val Loss: 0.9240 - Val MAE: 1.3683 - Val RMSE: 2.0339 - Val R²: 0.1464
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.7935
+Pred std:    0.8864
+Pearson r: 0.3901
+Baseline MAE: 1.5124
+Epoch [27/30] - Train Loss: 0.6456 - Train MAE: 1.0439 - Train RMSE: 1.3086 - Val Loss: 0.9178 - Val MAE: 1.3557 - Val RMSE: 2.0326 - Val R²: 0.1474
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.6349
+Pred std:    0.8989
+Pearson r: 0.4112
+Baseline MAE: 1.5124
+Epoch [28/30] - Train Loss: 0.7130 - Train MAE: 1.1157 - Train RMSE: 1.4220 - Val Loss: 0.9175 - Val MAE: 1.3440 - Val RMSE: 2.0345 - Val R²: 0.1458
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.7225
+Pred std:    0.9198
+Pearson r: 0.3972
+Baseline MAE: 1.5124
+Epoch [29/30] - Train Loss: 0.6369 - Train MAE: 1.0349 - Train RMSE: 1.3299 - Val Loss: 0.9353 - Val MAE: 1.3749 - Val RMSE: 2.0388 - Val R²: 0.1422
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.9523
+Pred std:    0.9585
+Pearson r: 0.3810
+Baseline MAE: 1.5124
+Epoch [30/30] - Train Loss: 0.6543 - Train MAE: 1.0437 - Train RMSE: 1.3630 - Val Loss: 0.9535 - Val MAE: 1.3821 - Val RMSE: 2.0656 - Val R²: 0.1195
+Target mean: 2.9585
+Target std:  2.2014
+Pred mean:   2.7125
+Pred std:    0.9170
+Pearson r: 0.3667
+Baseline MAE: 1.5124
+
+Best Val Loss: 0.8999 at Epoch 19
+Best Val MAE: 1.3111
+Best Val RMSE: 2.0043
+Best Val R²: 0.1710
+
+========== Fold 2 ==========
+
+Train stratification-bin counts:
+  low (0): 51
+  medium (1): 52
+  high (2): 53
+
+Validation stratification-bin counts:
+  low (0): 18
+  medium (1): 17
+  high (2): 17
+
+Epoch [1/30] - Train Loss: 1.5948 - Train MAE: 2.0546 - Train RMSE: 2.5628 - Val Loss: 1.1960 - Val MAE: 1.6457 - Val RMSE: 1.9488 - Val R²: -0.1606
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.2476
+Pred std:    0.5154
+Pearson r: 0.0043
+Baseline MAE: 1.5093
+Epoch [2/30] - Train Loss: 1.2098 - Train MAE: 1.6475 - Train RMSE: 2.1725 - Val Loss: 1.1359 - Val MAE: 1.6017 - Val RMSE: 1.8800 - Val R²: -0.0801
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.1461
+Pred std:    0.4539
+Pearson r: 0.1992
+Baseline MAE: 1.5093
+Epoch [3/30] - Train Loss: 1.0693 - Train MAE: 1.5015 - Train RMSE: 1.9553 - Val Loss: 0.9943 - Val MAE: 1.4244 - Val RMSE: 1.7172 - Val R²: 0.0990
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.4646
+Pred std:    0.4485
+Pearson r: 0.3792
+Baseline MAE: 1.5093
+Epoch [4/30] - Train Loss: 1.0308 - Train MAE: 1.4608 - Train RMSE: 1.8966 - Val Loss: 0.9553 - Val MAE: 1.3938 - Val RMSE: 1.6851 - Val R²: 0.1323
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.2889
+Pred std:    0.5131
+Pearson r: 0.4973
+Baseline MAE: 1.5093
+Epoch [5/30] - Train Loss: 1.0057 - Train MAE: 1.4400 - Train RMSE: 1.9242 - Val Loss: 0.9757 - Val MAE: 1.4399 - Val RMSE: 1.6874 - Val R²: 0.1299
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.2760
+Pred std:    0.6672
+Pearson r: 0.4596
+Baseline MAE: 1.5093
+Epoch [6/30] - Train Loss: 0.9469 - Train MAE: 1.3753 - Train RMSE: 1.7941 - Val Loss: 0.9491 - Val MAE: 1.4090 - Val RMSE: 1.6808 - Val R²: 0.1367
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.1907
+Pred std:    0.7286
+Pearson r: 0.4963
+Baseline MAE: 1.5093
+Epoch [7/30] - Train Loss: 0.8794 - Train MAE: 1.3045 - Train RMSE: 1.7437 - Val Loss: 0.8716 - Val MAE: 1.3088 - Val RMSE: 1.5866 - Val R²: 0.2308
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.3157
+Pred std:    0.7053
+Pearson r: 0.5701
+Baseline MAE: 1.5093
+Epoch [8/30] - Train Loss: 0.9294 - Train MAE: 1.3477 - Train RMSE: 1.8035 - Val Loss: 0.8576 - Val MAE: 1.2919 - Val RMSE: 1.5625 - Val R²: 0.2539
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.2904
+Pred std:    0.7140
+Pearson r: 0.6062
+Baseline MAE: 1.5093
+Epoch [9/30] - Train Loss: 0.8568 - Train MAE: 1.2862 - Train RMSE: 1.7105 - Val Loss: 0.8183 - Val MAE: 1.2465 - Val RMSE: 1.5061 - Val R²: 0.3069
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.3791
+Pred std:    0.7806
+Pearson r: 0.6241
+Baseline MAE: 1.5093
+Epoch [10/30] - Train Loss: 0.9125 - Train MAE: 1.3314 - Train RMSE: 1.8012 - Val Loss: 0.8434 - Val MAE: 1.2760 - Val RMSE: 1.5428 - Val R²: 0.2727
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.4352
+Pred std:    1.0517
+Pearson r: 0.5538
+Baseline MAE: 1.5093
+Epoch [11/30] - Train Loss: 0.9023 - Train MAE: 1.3193 - Train RMSE: 1.7755 - Val Loss: 0.7877 - Val MAE: 1.2147 - Val RMSE: 1.4614 - Val R²: 0.3474
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.5128
+Pred std:    0.7650
+Pearson r: 0.6452
+Baseline MAE: 1.5093
+Epoch [12/30] - Train Loss: 0.8926 - Train MAE: 1.3134 - Train RMSE: 1.7728 - Val Loss: 0.8512 - Val MAE: 1.2957 - Val RMSE: 1.5483 - Val R²: 0.2675
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.3597
+Pred std:    0.9316
+Pearson r: 0.5660
+Baseline MAE: 1.5093
+Epoch [13/30] - Train Loss: 0.8304 - Train MAE: 1.2392 - Train RMSE: 1.6760 - Val Loss: 0.8455 - Val MAE: 1.2767 - Val RMSE: 1.5350 - Val R²: 0.2800
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.3954
+Pred std:    0.7215
+Pearson r: 0.6028
+Baseline MAE: 1.5093
+Epoch [14/30] - Train Loss: 0.7741 - Train MAE: 1.1772 - Train RMSE: 1.6081 - Val Loss: 0.7846 - Val MAE: 1.1892 - Val RMSE: 1.4725 - Val R²: 0.3374
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.5994
+Pred std:    0.8104
+Pearson r: 0.6100
+Baseline MAE: 1.5093
+Epoch [15/30] - Train Loss: 0.8277 - Train MAE: 1.2384 - Train RMSE: 1.6895 - Val Loss: 0.7458 - Val MAE: 1.1716 - Val RMSE: 1.4205 - Val R²: 0.3834
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.6696
+Pred std:    1.0717
+Pearson r: 0.6222
+Baseline MAE: 1.5093
+Epoch [16/30] - Train Loss: 0.8026 - Train MAE: 1.1959 - Train RMSE: 1.6750 - Val Loss: 0.8131 - Val MAE: 1.2436 - Val RMSE: 1.5055 - Val R²: 0.3075
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.4670
+Pred std:    0.9418
+Pearson r: 0.5817
+Baseline MAE: 1.5093
+Epoch [17/30] - Train Loss: 0.8284 - Train MAE: 1.2437 - Train RMSE: 1.7003 - Val Loss: 0.7781 - Val MAE: 1.1995 - Val RMSE: 1.4869 - Val R²: 0.3244
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.3030
+Pred std:    0.9342
+Pearson r: 0.6355
+Baseline MAE: 1.5093
+Epoch [18/30] - Train Loss: 0.7130 - Train MAE: 1.0960 - Train RMSE: 1.5742 - Val Loss: 0.7274 - Val MAE: 1.1573 - Val RMSE: 1.3962 - Val R²: 0.4044
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.5789
+Pred std:    0.8751
+Pearson r: 0.6708
+Baseline MAE: 1.5093
+Epoch [19/30] - Train Loss: 0.7588 - Train MAE: 1.1698 - Train RMSE: 1.6001 - Val Loss: 0.7123 - Val MAE: 1.1418 - Val RMSE: 1.3802 - Val R²: 0.4179
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.8101
+Pred std:    0.9448
+Pearson r: 0.6618
+Baseline MAE: 1.5093
+Epoch [20/30] - Train Loss: 0.7283 - Train MAE: 1.1376 - Train RMSE: 1.5858 - Val Loss: 0.7119 - Val MAE: 1.1299 - Val RMSE: 1.3796 - Val R²: 0.4184
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.5953
+Pred std:    0.9132
+Pearson r: 0.6755
+Baseline MAE: 1.5093
+Epoch [21/30] - Train Loss: 0.7470 - Train MAE: 1.1560 - Train RMSE: 1.6074 - Val Loss: 0.6979 - Val MAE: 1.1016 - Val RMSE: 1.3895 - Val R²: 0.4101
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.7168
+Pred std:    0.9994
+Pearson r: 0.6480
+Baseline MAE: 1.5093
+Epoch [22/30] - Train Loss: 0.7715 - Train MAE: 1.1667 - Train RMSE: 1.6163 - Val Loss: 0.7257 - Val MAE: 1.1431 - Val RMSE: 1.3946 - Val R²: 0.4057
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.9301
+Pred std:    0.9761
+Pearson r: 0.6534
+Baseline MAE: 1.5093
+Epoch [23/30] - Train Loss: 0.7516 - Train MAE: 1.1493 - Train RMSE: 1.6075 - Val Loss: 0.6992 - Val MAE: 1.1094 - Val RMSE: 1.3913 - Val R²: 0.4085
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.7138
+Pred std:    1.0244
+Pearson r: 0.6446
+Baseline MAE: 1.5093
+Epoch [24/30] - Train Loss: 0.7262 - Train MAE: 1.1249 - Train RMSE: 1.5621 - Val Loss: 0.7494 - Val MAE: 1.1674 - Val RMSE: 1.4303 - Val R²: 0.3749
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.7239
+Pred std:    0.9499
+Pearson r: 0.6200
+Baseline MAE: 1.5093
+Epoch [25/30] - Train Loss: 0.7133 - Train MAE: 1.1194 - Train RMSE: 1.5607 - Val Loss: 0.7043 - Val MAE: 1.1070 - Val RMSE: 1.4034 - Val R²: 0.3982
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.6761
+Pred std:    1.0048
+Pearson r: 0.6384
+Baseline MAE: 1.5093
+Epoch [26/30] - Train Loss: 0.7019 - Train MAE: 1.0932 - Train RMSE: 1.5532 - Val Loss: 0.7509 - Val MAE: 1.1571 - Val RMSE: 1.4517 - Val R²: 0.3560
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.6489
+Pred std:    1.1305
+Pearson r: 0.6006
+Baseline MAE: 1.5093
+Epoch [27/30] - Train Loss: 0.6566 - Train MAE: 1.0408 - Train RMSE: 1.4814 - Val Loss: 0.7305 - Val MAE: 1.1290 - Val RMSE: 1.4071 - Val R²: 0.3950
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.5472
+Pred std:    1.0066
+Pearson r: 0.6462
+Baseline MAE: 1.5093
+Epoch [28/30] - Train Loss: 0.6470 - Train MAE: 1.0249 - Train RMSE: 1.4900 - Val Loss: 0.7221 - Val MAE: 1.1277 - Val RMSE: 1.3991 - Val R²: 0.4019
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.5716
+Pred std:    1.0037
+Pearson r: 0.6499
+Baseline MAE: 1.5093
+Epoch [29/30] - Train Loss: 0.6388 - Train MAE: 1.0191 - Train RMSE: 1.4772 - Val Loss: 0.6830 - Val MAE: 1.0806 - Val RMSE: 1.3844 - Val R²: 0.4144
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.8450
+Pred std:    1.1128
+Pearson r: 0.6460
+Baseline MAE: 1.5093
+Epoch [30/30] - Train Loss: 0.6622 - Train MAE: 1.0727 - Train RMSE: 1.4663 - Val Loss: 0.6952 - Val MAE: 1.0667 - Val RMSE: 1.4023 - Val R²: 0.3991
+Target mean: 2.7651
+Target std:  1.8090
+Pred mean:   2.6963
+Pred std:    1.1274
+Pearson r: 0.6330
+Baseline MAE: 1.5093
+
+Best Val Loss: 0.6830 at Epoch 29
+Best Val MAE: 1.0806
+Best Val RMSE: 1.3844
+Best Val R²: 0.4144
+
+========== Fold 3 ==========
+
+Train stratification-bin counts:
+  low (0): 52
+  medium (1): 52
+  high (2): 52
+
+Validation stratification-bin counts:
+  low (0): 17
+  medium (1): 17
+  high (2): 18
+
+Epoch [1/30] - Train Loss: 1.3241 - Train MAE: 1.7504 - Train RMSE: 2.3188 - Val Loss: 1.2429 - Val MAE: 1.6730 - Val RMSE: 2.0895 - Val R²: -0.3155
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.8534
+Pred std:    0.7790
+Pearson r: -0.1522
+Baseline MAE: 1.4703
+Epoch [2/30] - Train Loss: 1.1205 - Train MAE: 1.5420 - Train RMSE: 2.0303 - Val Loss: 1.1658 - Val MAE: 1.6164 - Val RMSE: 1.9748 - Val R²: -0.1751
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.2638
+Pred std:    0.5361
+Pearson r: -0.0235
+Baseline MAE: 1.4703
+Epoch [3/30] - Train Loss: 1.0257 - Train MAE: 1.4653 - Train RMSE: 1.8591 - Val Loss: 1.1054 - Val MAE: 1.5617 - Val RMSE: 1.8983 - Val R²: -0.0858
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.2776
+Pred std:    0.5564
+Pearson r: 0.1279
+Baseline MAE: 1.4703
+Epoch [4/30] - Train Loss: 0.9790 - Train MAE: 1.4054 - Train RMSE: 1.8359 - Val Loss: 1.0735 - Val MAE: 1.5329 - Val RMSE: 1.8640 - Val R²: -0.0468
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.4968
+Pred std:    0.6253
+Pearson r: 0.1342
+Baseline MAE: 1.4703
+Epoch [5/30] - Train Loss: 0.9505 - Train MAE: 1.3876 - Train RMSE: 1.8110 - Val Loss: 1.0929 - Val MAE: 1.5609 - Val RMSE: 1.8802 - Val R²: -0.0652
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.4979
+Pred std:    0.6407
+Pearson r: 0.1130
+Baseline MAE: 1.4703
+Epoch [6/30] - Train Loss: 0.9299 - Train MAE: 1.3709 - Train RMSE: 1.7632 - Val Loss: 0.9413 - Val MAE: 1.3965 - Val RMSE: 1.7285 - Val R²: 0.0998
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.6922
+Pred std:    0.6502
+Pearson r: 0.3203
+Baseline MAE: 1.4703
+Epoch [7/30] - Train Loss: 0.8898 - Train MAE: 1.3117 - Train RMSE: 1.7365 - Val Loss: 1.0472 - Val MAE: 1.5148 - Val RMSE: 1.8256 - Val R²: -0.0042
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.5105
+Pred std:    0.7174
+Pearson r: 0.2156
+Baseline MAE: 1.4703
+Epoch [8/30] - Train Loss: 0.8847 - Train MAE: 1.3067 - Train RMSE: 1.7584 - Val Loss: 0.9967 - Val MAE: 1.4562 - Val RMSE: 1.7844 - Val R²: 0.0406
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.2483
+Pred std:    0.6694
+Pearson r: 0.3470
+Baseline MAE: 1.4703
+Epoch [9/30] - Train Loss: 0.8524 - Train MAE: 1.2622 - Train RMSE: 1.7017 - Val Loss: 0.8747 - Val MAE: 1.3157 - Val RMSE: 1.6575 - Val R²: 0.1722
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.5734
+Pred std:    0.9133
+Pearson r: 0.4331
+Baseline MAE: 1.4703
+Epoch [10/30] - Train Loss: 0.8882 - Train MAE: 1.3109 - Train RMSE: 1.6972 - Val Loss: 0.9709 - Val MAE: 1.4345 - Val RMSE: 1.7314 - Val R²: 0.0967
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.4426
+Pred std:    0.8173
+Pearson r: 0.3663
+Baseline MAE: 1.4703
+Epoch [11/30] - Train Loss: 0.9320 - Train MAE: 1.3612 - Train RMSE: 1.7422 - Val Loss: 0.8727 - Val MAE: 1.3181 - Val RMSE: 1.6415 - Val R²: 0.1882
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.8099
+Pred std:    0.8025
+Pearson r: 0.4346
+Baseline MAE: 1.4703
+Epoch [12/30] - Train Loss: 0.7748 - Train MAE: 1.2007 - Train RMSE: 1.5600 - Val Loss: 0.8622 - Val MAE: 1.2927 - Val RMSE: 1.6512 - Val R²: 0.1785
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.7711
+Pred std:    0.7595
+Pearson r: 0.4226
+Baseline MAE: 1.4703
+Epoch [13/30] - Train Loss: 0.7630 - Train MAE: 1.1766 - Train RMSE: 1.5909 - Val Loss: 0.8183 - Val MAE: 1.2629 - Val RMSE: 1.5765 - Val R²: 0.2511
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.5436
+Pred std:    0.7353
+Pearson r: 0.5306
+Baseline MAE: 1.4703
+Epoch [14/30] - Train Loss: 0.8613 - Train MAE: 1.2647 - Train RMSE: 1.7327 - Val Loss: 0.9430 - Val MAE: 1.3594 - Val RMSE: 1.7116 - Val R²: 0.1173
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   3.1179
+Pred std:    0.9198
+Pearson r: 0.4065
+Baseline MAE: 1.4703
+Epoch [15/30] - Train Loss: 0.7378 - Train MAE: 1.1431 - Train RMSE: 1.5751 - Val Loss: 0.8191 - Val MAE: 1.2379 - Val RMSE: 1.5821 - Val R²: 0.2459
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.7857
+Pred std:    0.7842
+Pearson r: 0.5010
+Baseline MAE: 1.4703
+Epoch [16/30] - Train Loss: 0.8326 - Train MAE: 1.2315 - Train RMSE: 1.6804 - Val Loss: 0.9309 - Val MAE: 1.3472 - Val RMSE: 1.7065 - Val R²: 0.1225
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   3.1167
+Pred std:    1.0230
+Pearson r: 0.4237
+Baseline MAE: 1.4703
+Epoch [17/30] - Train Loss: 0.7237 - Train MAE: 1.1148 - Train RMSE: 1.5675 - Val Loss: 0.7769 - Val MAE: 1.1758 - Val RMSE: 1.5633 - Val R²: 0.2636
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.8031
+Pred std:    0.9473
+Pearson r: 0.5140
+Baseline MAE: 1.4703
+Epoch [18/30] - Train Loss: 0.7948 - Train MAE: 1.2073 - Train RMSE: 1.6043 - Val Loss: 0.8052 - Val MAE: 1.2038 - Val RMSE: 1.5702 - Val R²: 0.2571
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   3.0515
+Pred std:    0.8710
+Pearson r: 0.5345
+Baseline MAE: 1.4703
+Epoch [19/30] - Train Loss: 0.7034 - Train MAE: 1.1202 - Train RMSE: 1.4611 - Val Loss: 0.7931 - Val MAE: 1.2060 - Val RMSE: 1.5408 - Val R²: 0.2846
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   3.0003
+Pred std:    0.9919
+Pearson r: 0.5494
+Baseline MAE: 1.4703
+Epoch [20/30] - Train Loss: 0.7068 - Train MAE: 1.0944 - Train RMSE: 1.5566 - Val Loss: 0.7932 - Val MAE: 1.1834 - Val RMSE: 1.5608 - Val R²: 0.2660
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   3.0179
+Pred std:    0.8371
+Pearson r: 0.5407
+Baseline MAE: 1.4703
+Epoch [21/30] - Train Loss: 0.6384 - Train MAE: 1.0341 - Train RMSE: 1.4474 - Val Loss: 0.8612 - Val MAE: 1.2626 - Val RMSE: 1.6293 - Val R²: 0.2001
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.9886
+Pred std:    1.0313
+Pearson r: 0.4735
+Baseline MAE: 1.4703
+Epoch [22/30] - Train Loss: 0.6982 - Train MAE: 1.1043 - Train RMSE: 1.4741 - Val Loss: 0.7771 - Val MAE: 1.2080 - Val RMSE: 1.5245 - Val R²: 0.2997
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.5215
+Pred std:    0.8798
+Pearson r: 0.5698
+Baseline MAE: 1.4703
+Epoch [23/30] - Train Loss: 0.7270 - Train MAE: 1.1183 - Train RMSE: 1.5447 - Val Loss: 0.8022 - Val MAE: 1.1994 - Val RMSE: 1.5810 - Val R²: 0.2469
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.9036
+Pred std:    0.9888
+Pearson r: 0.5044
+Baseline MAE: 1.4703
+Epoch [24/30] - Train Loss: 0.7589 - Train MAE: 1.1594 - Train RMSE: 1.5915 - Val Loss: 0.7956 - Val MAE: 1.2025 - Val RMSE: 1.5666 - Val R²: 0.2605
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.7870
+Pred std:    0.9232
+Pearson r: 0.5106
+Baseline MAE: 1.4703
+Epoch [25/30] - Train Loss: 0.7297 - Train MAE: 1.1356 - Train RMSE: 1.5403 - Val Loss: 0.8169 - Val MAE: 1.2217 - Val RMSE: 1.5697 - Val R²: 0.2576
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.7626
+Pred std:    0.8778
+Pearson r: 0.5083
+Baseline MAE: 1.4703
+Epoch [26/30] - Train Loss: 0.5989 - Train MAE: 0.9706 - Train RMSE: 1.3841 - Val Loss: 0.7950 - Val MAE: 1.2163 - Val RMSE: 1.5546 - Val R²: 0.2719
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.6692
+Pred std:    0.8895
+Pearson r: 0.5252
+Baseline MAE: 1.4703
+Epoch [27/30] - Train Loss: 0.6941 - Train MAE: 1.0794 - Train RMSE: 1.5147 - Val Loss: 0.8271 - Val MAE: 1.2373 - Val RMSE: 1.5788 - Val R²: 0.2489
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.9136
+Pred std:    0.9752
+Pearson r: 0.5067
+Baseline MAE: 1.4703
+Epoch [28/30] - Train Loss: 0.7864 - Train MAE: 1.1954 - Train RMSE: 1.5943 - Val Loss: 0.7936 - Val MAE: 1.2102 - Val RMSE: 1.5555 - Val R²: 0.2710
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.7276
+Pred std:    0.9618
+Pearson r: 0.5210
+Baseline MAE: 1.4703
+Epoch [29/30] - Train Loss: 0.7105 - Train MAE: 1.1048 - Train RMSE: 1.5207 - Val Loss: 0.8878 - Val MAE: 1.3034 - Val RMSE: 1.6589 - Val R²: 0.1708
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.9379
+Pred std:    1.2056
+Pearson r: 0.4670
+Baseline MAE: 1.4703
+Epoch [30/30] - Train Loss: 0.6431 - Train MAE: 1.0354 - Train RMSE: 1.4576 - Val Loss: 0.7776 - Val MAE: 1.1737 - Val RMSE: 1.5216 - Val R²: 0.3024
+Target mean: 2.7615
+Target std:  1.8218
+Pred mean:   2.8606
+Pred std:    0.9766
+Pearson r: 0.5528
+Baseline MAE: 1.4703
+
+Best Val Loss: 0.7769 at Epoch 17
+Best Val MAE: 1.1758
+Best Val RMSE: 1.5633
+Best Val R²: 0.2636
+
+========== Fold 4 ==========
+
+Train stratification-bin counts:
+  low (0): 52
+  medium (1): 52
+  high (2): 52
+
+Validation stratification-bin counts:
+  low (0): 17
+  medium (1): 17
+  high (2): 18
+
+Epoch [1/30] - Train Loss: 1.4286 - Train MAE: 1.8664 - Train RMSE: 2.3634 - Val Loss: 1.3427 - Val MAE: 1.7860 - Val RMSE: 2.2024 - Val R²: -0.3107
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.7206
+Pred std:    0.7283
+Pearson r: -0.2161
+Baseline MAE: 1.5858
+Epoch [2/30] - Train Loss: 1.0385 - Train MAE: 1.4780 - Train RMSE: 1.9088 - Val Loss: 1.2768 - Val MAE: 1.7258 - Val RMSE: 2.1107 - Val R²: -0.2038
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.3118
+Pred std:    0.5467
+Pearson r: -0.0847
+Baseline MAE: 1.5858
+Epoch [3/30] - Train Loss: 1.1021 - Train MAE: 1.5372 - Train RMSE: 2.0169 - Val Loss: 1.2611 - Val MAE: 1.7141 - Val RMSE: 2.0987 - Val R²: -0.1902
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.3444
+Pred std:    0.6151
+Pearson r: -0.0344
+Baseline MAE: 1.5858
+Epoch [4/30] - Train Loss: 0.9466 - Train MAE: 1.3687 - Train RMSE: 1.8351 - Val Loss: 1.1697 - Val MAE: 1.6194 - Val RMSE: 2.0071 - Val R²: -0.0886
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.4042
+Pred std:    0.6531
+Pearson r: 0.1144
+Baseline MAE: 1.5858
+Epoch [5/30] - Train Loss: 0.8956 - Train MAE: 1.3240 - Train RMSE: 1.7585 - Val Loss: 1.1495 - Val MAE: 1.6115 - Val RMSE: 1.9704 - Val R²: -0.0492
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.4193
+Pred std:    0.6728
+Pearson r: 0.1725
+Baseline MAE: 1.5858
+Epoch [6/30] - Train Loss: 0.9877 - Train MAE: 1.4230 - Train RMSE: 1.8598 - Val Loss: 1.0832 - Val MAE: 1.5183 - Val RMSE: 1.9298 - Val R²: -0.0063
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.6185
+Pred std:    0.7886
+Pearson r: 0.2132
+Baseline MAE: 1.5858
+Epoch [7/30] - Train Loss: 0.9180 - Train MAE: 1.3515 - Train RMSE: 1.7659 - Val Loss: 1.1556 - Val MAE: 1.5979 - Val RMSE: 1.9673 - Val R²: -0.0459
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.6821
+Pred std:    0.7362
+Pearson r: 0.1400
+Baseline MAE: 1.5858
+Epoch [8/30] - Train Loss: 0.8686 - Train MAE: 1.2771 - Train RMSE: 1.7651 - Val Loss: 1.0678 - Val MAE: 1.5027 - Val RMSE: 1.8836 - Val R²: 0.0412
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.5504
+Pred std:    0.8361
+Pearson r: 0.2906
+Baseline MAE: 1.5858
+Epoch [9/30] - Train Loss: 0.8099 - Train MAE: 1.2175 - Train RMSE: 1.6471 - Val Loss: 1.1449 - Val MAE: 1.5983 - Val RMSE: 1.9994 - Val R²: -0.0802
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.2304
+Pred std:    0.7815
+Pearson r: 0.2274
+Baseline MAE: 1.5858
+Epoch [10/30] - Train Loss: 0.8429 - Train MAE: 1.2594 - Train RMSE: 1.7252 - Val Loss: 1.0892 - Val MAE: 1.5302 - Val RMSE: 1.9215 - Val R²: 0.0023
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.4608
+Pred std:    0.8305
+Pearson r: 0.2632
+Baseline MAE: 1.5858
+Epoch [11/30] - Train Loss: 0.7848 - Train MAE: 1.2005 - Train RMSE: 1.6361 - Val Loss: 1.0590 - Val MAE: 1.5096 - Val RMSE: 1.9238 - Val R²: -0.0001
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.2488
+Pred std:    0.9120
+Pearson r: 0.3360
+Baseline MAE: 1.5858
+Epoch [12/30] - Train Loss: 0.7513 - Train MAE: 1.1416 - Train RMSE: 1.5862 - Val Loss: 1.0784 - Val MAE: 1.5055 - Val RMSE: 1.8762 - Val R²: 0.0488
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.7262
+Pred std:    0.9187
+Pearson r: 0.2934
+Baseline MAE: 1.5858
+Epoch [13/30] - Train Loss: 0.8461 - Train MAE: 1.2710 - Train RMSE: 1.6864 - Val Loss: 1.0567 - Val MAE: 1.4748 - Val RMSE: 1.9007 - Val R²: 0.0237
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.6010
+Pred std:    0.9297
+Pearson r: 0.2820
+Baseline MAE: 1.5858
+Epoch [14/30] - Train Loss: 0.8107 - Train MAE: 1.2086 - Train RMSE: 1.6710 - Val Loss: 0.9920 - Val MAE: 1.4069 - Val RMSE: 1.8046 - Val R²: 0.1200
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.6808
+Pred std:    0.9198
+Pearson r: 0.3716
+Baseline MAE: 1.5858
+Epoch [15/30] - Train Loss: 0.7096 - Train MAE: 1.1136 - Train RMSE: 1.5201 - Val Loss: 1.0006 - Val MAE: 1.4568 - Val RMSE: 1.8319 - Val R²: 0.0932
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.3640
+Pred std:    0.9797
+Pearson r: 0.4059
+Baseline MAE: 1.5858
+Epoch [16/30] - Train Loss: 0.7382 - Train MAE: 1.1325 - Train RMSE: 1.6168 - Val Loss: 1.0935 - Val MAE: 1.5229 - Val RMSE: 1.9099 - Val R²: 0.0143
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.7358
+Pred std:    1.2088
+Pearson r: 0.3278
+Baseline MAE: 1.5858
+Epoch [17/30] - Train Loss: 0.7509 - Train MAE: 1.1574 - Train RMSE: 1.6289 - Val Loss: 1.1046 - Val MAE: 1.5417 - Val RMSE: 1.9736 - Val R²: -0.0525
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.4543
+Pred std:    1.3967
+Pearson r: 0.3543
+Baseline MAE: 1.5858
+Epoch [18/30] - Train Loss: 0.7524 - Train MAE: 1.1659 - Train RMSE: 1.6082 - Val Loss: 1.0262 - Val MAE: 1.4515 - Val RMSE: 1.8452 - Val R²: 0.0799
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.6297
+Pred std:    1.0351
+Pearson r: 0.3543
+Baseline MAE: 1.5858
+Epoch [19/30] - Train Loss: 0.7055 - Train MAE: 1.1121 - Train RMSE: 1.5057 - Val Loss: 0.9908 - Val MAE: 1.4207 - Val RMSE: 1.8187 - Val R²: 0.1062
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.4480
+Pred std:    1.0242
+Pearson r: 0.4047
+Baseline MAE: 1.5858
+Epoch [20/30] - Train Loss: 0.6828 - Train MAE: 1.0638 - Train RMSE: 1.5028 - Val Loss: 1.0351 - Val MAE: 1.4721 - Val RMSE: 1.8602 - Val R²: 0.0650
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.5663
+Pred std:    0.9881
+Pearson r: 0.3396
+Baseline MAE: 1.5858
+Epoch [21/30] - Train Loss: 0.6312 - Train MAE: 1.0166 - Train RMSE: 1.4588 - Val Loss: 1.0297 - Val MAE: 1.4681 - Val RMSE: 1.8167 - Val R²: 0.1081
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.9324
+Pred std:    1.1463
+Pearson r: 0.3907
+Baseline MAE: 1.5858
+Epoch [22/30] - Train Loss: 0.6877 - Train MAE: 1.0929 - Train RMSE: 1.5000 - Val Loss: 1.0778 - Val MAE: 1.5253 - Val RMSE: 1.8869 - Val R²: 0.0379
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.6446
+Pred std:    1.2900
+Pearson r: 0.3712
+Baseline MAE: 1.5858
+Epoch [23/30] - Train Loss: 0.7120 - Train MAE: 1.1148 - Train RMSE: 1.5278 - Val Loss: 0.9613 - Val MAE: 1.3691 - Val RMSE: 1.7669 - Val R²: 0.1564
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.7217
+Pred std:    0.9828
+Pearson r: 0.4121
+Baseline MAE: 1.5858
+Epoch [24/30] - Train Loss: 0.6599 - Train MAE: 1.0475 - Train RMSE: 1.4937 - Val Loss: 1.0481 - Val MAE: 1.4740 - Val RMSE: 1.8531 - Val R²: 0.0720
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.8697
+Pred std:    1.1100
+Pearson r: 0.3511
+Baseline MAE: 1.5858
+Epoch [25/30] - Train Loss: 0.5831 - Train MAE: 0.9687 - Train RMSE: 1.3631 - Val Loss: 0.9814 - Val MAE: 1.3831 - Val RMSE: 1.7928 - Val R²: 0.1315
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.8187
+Pred std:    1.1885
+Pearson r: 0.4154
+Baseline MAE: 1.5858
+Epoch [26/30] - Train Loss: 0.6788 - Train MAE: 1.0774 - Train RMSE: 1.4458 - Val Loss: 0.9306 - Val MAE: 1.3437 - Val RMSE: 1.7528 - Val R²: 0.1698
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.5572
+Pred std:    1.0559
+Pearson r: 0.4486
+Baseline MAE: 1.5858
+Epoch [27/30] - Train Loss: 0.5065 - Train MAE: 0.8841 - Train RMSE: 1.2422 - Val Loss: 0.9500 - Val MAE: 1.3740 - Val RMSE: 1.7452 - Val R²: 0.1770
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.6062
+Pred std:    0.9846
+Pearson r: 0.4430
+Baseline MAE: 1.5858
+Epoch [28/30] - Train Loss: 0.7006 - Train MAE: 1.0887 - Train RMSE: 1.5623 - Val Loss: 0.9897 - Val MAE: 1.3986 - Val RMSE: 1.7815 - Val R²: 0.1424
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.8489
+Pred std:    1.1477
+Pearson r: 0.4177
+Baseline MAE: 1.5858
+Epoch [29/30] - Train Loss: 0.6432 - Train MAE: 1.0436 - Train RMSE: 1.4031 - Val Loss: 0.9875 - Val MAE: 1.4112 - Val RMSE: 1.7806 - Val R²: 0.1433
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.7146
+Pred std:    1.2032
+Pearson r: 0.4306
+Baseline MAE: 1.5858
+Epoch [30/30] - Train Loss: 0.6471 - Train MAE: 1.0439 - Train RMSE: 1.4490 - Val Loss: 0.9713 - Val MAE: 1.3969 - Val RMSE: 1.7820 - Val R²: 0.1419
+Target mean: 2.8385
+Target std:  1.9237
+Pred mean:   2.6551
+Pred std:    1.0455
+Pearson r: 0.4106
+Baseline MAE: 1.5858
+
+Best Val Loss: 0.9306 at Epoch 26
+Best Val MAE: 1.3437
+Best Val RMSE: 1.7528
+Best Val R²: 0.1698
+
+========== Cross-Validation Summary ==========
+Val Loss: 0.8226 ± 0.0990
+Val MAE:  1.2278 ± 0.1057
+Val RMSE: 1.6762 ± 0.2299
+Val R²: 0.2547 ± 0.0997
+Val Pearson r: 0.5085 ± 0.0857
+Baseline MAE:  1.5195 ± 0.0417
+
+
+
+
+
+
+
+
+====================================================================================================================================
+
+
+
+
+uv run python -m baseline_pipeline.train
+Currently on cuda
+Task: bin_classification | Backbone: resnet50
+CSV path exists. Continuing...
+CSV path exists. Continuing...
+
+========== Fold 1/4 ==========
+
+Train stratification-bin counts:
+  low (0): 52
+  medium (1): 51
+  high (2): 53
+
+Validation stratification-bin counts:
+  low (0): 17
+  medium (1): 18
+  high (2): 17
+
+Epoch [1/30] - Train Loss: 1.1022 - Train Accuracy: 37.18% - Val Loss: 1.0802 - Val Accuracy: 44.23% - Majority Baseline: 32.69%
+Epoch [2/30] - Train Loss: 1.0617 - Train Accuracy: 43.59% - Val Loss: 1.0480 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [3/30] - Train Loss: 1.0249 - Train Accuracy: 48.08% - Val Loss: 1.0469 - Val Accuracy: 48.08% - Majority Baseline: 32.69%
+Epoch [4/30] - Train Loss: 0.9776 - Train Accuracy: 56.41% - Val Loss: 1.0249 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [5/30] - Train Loss: 0.9688 - Train Accuracy: 56.41% - Val Loss: 1.0149 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [6/30] - Train Loss: 0.9364 - Train Accuracy: 57.05% - Val Loss: 1.0062 - Val Accuracy: 46.15% - Majority Baseline: 32.69%
+Epoch [7/30] - Train Loss: 0.9285 - Train Accuracy: 59.62% - Val Loss: 1.0108 - Val Accuracy: 42.31% - Majority Baseline: 32.69%
+Epoch [8/30] - Train Loss: 0.9283 - Train Accuracy: 62.18% - Val Loss: 1.0067 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [9/30] - Train Loss: 0.8691 - Train Accuracy: 67.95% - Val Loss: 1.0005 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [10/30] - Train Loss: 0.8614 - Train Accuracy: 65.38% - Val Loss: 0.9891 - Val Accuracy: 55.77% - Majority Baseline: 32.69%
+Epoch [11/30] - Train Loss: 0.8998 - Train Accuracy: 62.82% - Val Loss: 0.9912 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [12/30] - Train Loss: 0.8334 - Train Accuracy: 67.95% - Val Loss: 1.0200 - Val Accuracy: 48.08% - Majority Baseline: 32.69%
+Epoch [13/30] - Train Loss: 0.8329 - Train Accuracy: 67.95% - Val Loss: 1.0199 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [14/30] - Train Loss: 0.8391 - Train Accuracy: 61.54% - Val Loss: 1.0370 - Val Accuracy: 40.38% - Majority Baseline: 32.69%
+Epoch [15/30] - Train Loss: 0.8083 - Train Accuracy: 70.51% - Val Loss: 1.0444 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [16/30] - Train Loss: 0.8363 - Train Accuracy: 65.38% - Val Loss: 0.9889 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [17/30] - Train Loss: 0.7797 - Train Accuracy: 67.95% - Val Loss: 1.0032 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [18/30] - Train Loss: 0.7601 - Train Accuracy: 69.23% - Val Loss: 1.0190 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [19/30] - Train Loss: 0.7717 - Train Accuracy: 69.87% - Val Loss: 1.0099 - Val Accuracy: 48.08% - Majority Baseline: 32.69%
+Epoch [20/30] - Train Loss: 0.7476 - Train Accuracy: 72.44% - Val Loss: 1.0250 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [21/30] - Train Loss: 0.7479 - Train Accuracy: 69.87% - Val Loss: 1.0206 - Val Accuracy: 48.08% - Majority Baseline: 32.69%
+Epoch [22/30] - Train Loss: 0.7605 - Train Accuracy: 69.23% - Val Loss: 1.0178 - Val Accuracy: 48.08% - Majority Baseline: 32.69%
+Epoch [23/30] - Train Loss: 0.7897 - Train Accuracy: 67.95% - Val Loss: 0.9871 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [24/30] - Train Loss: 0.7704 - Train Accuracy: 69.87% - Val Loss: 1.0456 - Val Accuracy: 44.23% - Majority Baseline: 32.69%
+Epoch [25/30] - Train Loss: 0.7431 - Train Accuracy: 74.36% - Val Loss: 0.9667 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [26/30] - Train Loss: 0.7280 - Train Accuracy: 73.08% - Val Loss: 0.9903 - Val Accuracy: 53.85% - Majority Baseline: 32.69%
+Epoch [27/30] - Train Loss: 0.7115 - Train Accuracy: 75.00% - Val Loss: 1.0201 - Val Accuracy: 46.15% - Majority Baseline: 32.69%
+Epoch [28/30] - Train Loss: 0.7510 - Train Accuracy: 71.15% - Val Loss: 0.9943 - Val Accuracy: 55.77% - Majority Baseline: 32.69%
+Epoch [29/30] - Train Loss: 0.6673 - Train Accuracy: 81.41% - Val Loss: 1.0032 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [30/30] - Train Loss: 0.7276 - Train Accuracy: 71.15% - Val Loss: 1.0071 - Val Accuracy: 53.85% - Majority Baseline: 32.69%
+
+Best epoch: 25
+Best Val Loss: 0.9667
+Best Val Accuracy: 51.92%
+Majority Baseline Accuracy: 32.69%
+
+========== Fold 2/4 ==========
+
+Train stratification-bin counts:
+  low (0): 51
+  medium (1): 52
+  high (2): 53
+
+Validation stratification-bin counts:
+  low (0): 18
+  medium (1): 17
+  high (2): 17
+
+Epoch [1/30] - Train Loss: 1.1058 - Train Accuracy: 28.21% - Val Loss: 1.0648 - Val Accuracy: 44.23% - Majority Baseline: 32.69%
+Epoch [2/30] - Train Loss: 1.0885 - Train Accuracy: 37.82% - Val Loss: 1.0369 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [3/30] - Train Loss: 1.0410 - Train Accuracy: 48.72% - Val Loss: 1.0391 - Val Accuracy: 44.23% - Majority Baseline: 32.69%
+Epoch [4/30] - Train Loss: 1.0242 - Train Accuracy: 50.64% - Val Loss: 1.0078 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [5/30] - Train Loss: 0.9731 - Train Accuracy: 64.74% - Val Loss: 1.0013 - Val Accuracy: 59.62% - Majority Baseline: 32.69%
+Epoch [6/30] - Train Loss: 0.9732 - Train Accuracy: 60.26% - Val Loss: 0.9973 - Val Accuracy: 61.54% - Majority Baseline: 32.69%
+Epoch [7/30] - Train Loss: 0.9588 - Train Accuracy: 59.62% - Val Loss: 0.9735 - Val Accuracy: 67.31% - Majority Baseline: 32.69%
+Epoch [8/30] - Train Loss: 0.9065 - Train Accuracy: 66.03% - Val Loss: 0.9952 - Val Accuracy: 61.54% - Majority Baseline: 32.69%
+Epoch [9/30] - Train Loss: 0.9029 - Train Accuracy: 65.38% - Val Loss: 0.9822 - Val Accuracy: 59.62% - Majority Baseline: 32.69%
+Epoch [10/30] - Train Loss: 0.9002 - Train Accuracy: 67.31% - Val Loss: 0.9764 - Val Accuracy: 65.38% - Majority Baseline: 32.69%
+Epoch [11/30] - Train Loss: 0.8700 - Train Accuracy: 67.95% - Val Loss: 0.9671 - Val Accuracy: 65.38% - Majority Baseline: 32.69%
+Epoch [12/30] - Train Loss: 0.8705 - Train Accuracy: 67.31% - Val Loss: 0.9459 - Val Accuracy: 59.62% - Majority Baseline: 32.69%
+Epoch [13/30] - Train Loss: 0.8352 - Train Accuracy: 69.87% - Val Loss: 0.9892 - Val Accuracy: 55.77% - Majority Baseline: 32.69%
+Epoch [14/30] - Train Loss: 0.8454 - Train Accuracy: 68.59% - Val Loss: 0.9440 - Val Accuracy: 59.62% - Majority Baseline: 32.69%
+Epoch [15/30] - Train Loss: 0.8349 - Train Accuracy: 67.95% - Val Loss: 0.9431 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [16/30] - Train Loss: 0.7820 - Train Accuracy: 74.36% - Val Loss: 0.9282 - Val Accuracy: 61.54% - Majority Baseline: 32.69%
+Epoch [17/30] - Train Loss: 0.8033 - Train Accuracy: 71.79% - Val Loss: 0.9500 - Val Accuracy: 53.85% - Majority Baseline: 32.69%
+Epoch [18/30] - Train Loss: 0.7941 - Train Accuracy: 68.59% - Val Loss: 0.9545 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [19/30] - Train Loss: 0.8040 - Train Accuracy: 72.44% - Val Loss: 0.9308 - Val Accuracy: 59.62% - Majority Baseline: 32.69%
+Epoch [20/30] - Train Loss: 0.8057 - Train Accuracy: 67.95% - Val Loss: 0.9231 - Val Accuracy: 61.54% - Majority Baseline: 32.69%
+Epoch [21/30] - Train Loss: 0.7524 - Train Accuracy: 73.72% - Val Loss: 0.9459 - Val Accuracy: 55.77% - Majority Baseline: 32.69%
+Epoch [22/30] - Train Loss: 0.7900 - Train Accuracy: 71.15% - Val Loss: 0.9290 - Val Accuracy: 57.69% - Majority Baseline: 32.69%
+Epoch [23/30] - Train Loss: 0.7886 - Train Accuracy: 73.08% - Val Loss: 0.9395 - Val Accuracy: 57.69% - Majority Baseline: 32.69%
+Epoch [24/30] - Train Loss: 0.7263 - Train Accuracy: 74.36% - Val Loss: 0.9389 - Val Accuracy: 55.77% - Majority Baseline: 32.69%
+Epoch [25/30] - Train Loss: 0.7227 - Train Accuracy: 72.44% - Val Loss: 0.9549 - Val Accuracy: 53.85% - Majority Baseline: 32.69%
+Epoch [26/30] - Train Loss: 0.7473 - Train Accuracy: 77.56% - Val Loss: 0.9271 - Val Accuracy: 57.69% - Majority Baseline: 32.69%
+Epoch [27/30] - Train Loss: 0.7482 - Train Accuracy: 72.44% - Val Loss: 0.8983 - Val Accuracy: 61.54% - Majority Baseline: 32.69%
+Epoch [28/30] - Train Loss: 0.7230 - Train Accuracy: 74.36% - Val Loss: 0.9253 - Val Accuracy: 57.69% - Majority Baseline: 32.69%
+Epoch [29/30] - Train Loss: 0.7474 - Train Accuracy: 74.36% - Val Loss: 0.9080 - Val Accuracy: 57.69% - Majority Baseline: 32.69%
+Epoch [30/30] - Train Loss: 0.7344 - Train Accuracy: 75.64% - Val Loss: 0.9513 - Val Accuracy: 61.54% - Majority Baseline: 32.69%
+
+Best epoch: 27
+Best Val Loss: 0.8983
+Best Val Accuracy: 61.54%
+Majority Baseline Accuracy: 32.69%
+
+========== Fold 3/4 ==========
+
+Train stratification-bin counts:
+  low (0): 52
+  medium (1): 52
+  high (2): 52
+
+Validation stratification-bin counts:
+  low (0): 17
+  medium (1): 17
+  high (2): 18
+
+Epoch [1/30] - Train Loss: 1.1057 - Train Accuracy: 29.49% - Val Loss: 1.1102 - Val Accuracy: 32.69% - Majority Baseline: 32.69%
+Epoch [2/30] - Train Loss: 1.0666 - Train Accuracy: 42.95% - Val Loss: 1.0741 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [3/30] - Train Loss: 1.0232 - Train Accuracy: 50.00% - Val Loss: 1.0723 - Val Accuracy: 44.23% - Majority Baseline: 34.62%
+Epoch [4/30] - Train Loss: 1.0046 - Train Accuracy: 52.56% - Val Loss: 1.0874 - Val Accuracy: 40.38% - Majority Baseline: 32.69%
+Epoch [5/30] - Train Loss: 0.9680 - Train Accuracy: 56.41% - Val Loss: 1.0158 - Val Accuracy: 55.77% - Majority Baseline: 32.69%
+Epoch [6/30] - Train Loss: 0.9572 - Train Accuracy: 53.85% - Val Loss: 1.0490 - Val Accuracy: 50.00% - Majority Baseline: 34.62%
+Epoch [7/30] - Train Loss: 0.9169 - Train Accuracy: 63.46% - Val Loss: 1.0504 - Val Accuracy: 42.31% - Majority Baseline: 32.69%
+Epoch [8/30] - Train Loss: 0.9352 - Train Accuracy: 57.69% - Val Loss: 1.0390 - Val Accuracy: 40.38% - Majority Baseline: 32.69%
+Epoch [9/30] - Train Loss: 0.8881 - Train Accuracy: 64.10% - Val Loss: 1.0097 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [10/30] - Train Loss: 0.8931 - Train Accuracy: 62.82% - Val Loss: 1.0230 - Val Accuracy: 46.15% - Majority Baseline: 32.69%
+Epoch [11/30] - Train Loss: 0.8662 - Train Accuracy: 66.03% - Val Loss: 1.0472 - Val Accuracy: 44.23% - Majority Baseline: 32.69%
+Epoch [12/30] - Train Loss: 0.8651 - Train Accuracy: 67.31% - Val Loss: 1.0246 - Val Accuracy: 53.85% - Majority Baseline: 32.69%
+Epoch [13/30] - Train Loss: 0.8286 - Train Accuracy: 70.51% - Val Loss: 1.0172 - Val Accuracy: 55.77% - Majority Baseline: 32.69%
+Epoch [14/30] - Train Loss: 0.8283 - Train Accuracy: 66.67% - Val Loss: 0.9848 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [15/30] - Train Loss: 0.8234 - Train Accuracy: 66.67% - Val Loss: 1.0284 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [16/30] - Train Loss: 0.8352 - Train Accuracy: 64.74% - Val Loss: 1.0324 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [17/30] - Train Loss: 0.8151 - Train Accuracy: 69.23% - Val Loss: 1.0224 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [18/30] - Train Loss: 0.8454 - Train Accuracy: 62.18% - Val Loss: 1.0206 - Val Accuracy: 48.08% - Majority Baseline: 32.69%
+Epoch [19/30] - Train Loss: 0.8310 - Train Accuracy: 69.23% - Val Loss: 1.0160 - Val Accuracy: 46.15% - Majority Baseline: 32.69%
+Epoch [20/30] - Train Loss: 0.7872 - Train Accuracy: 69.23% - Val Loss: 1.0000 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [21/30] - Train Loss: 0.7398 - Train Accuracy: 77.56% - Val Loss: 1.0174 - Val Accuracy: 50.00% - Majority Baseline: 34.62%
+Epoch [22/30] - Train Loss: 0.7889 - Train Accuracy: 67.31% - Val Loss: 1.0090 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [23/30] - Train Loss: 0.7258 - Train Accuracy: 73.72% - Val Loss: 1.0091 - Val Accuracy: 53.85% - Majority Baseline: 34.62%
+Epoch [24/30] - Train Loss: 0.7175 - Train Accuracy: 69.87% - Val Loss: 1.0070 - Val Accuracy: 48.08% - Majority Baseline: 32.69%
+Epoch [25/30] - Train Loss: 0.7328 - Train Accuracy: 70.51% - Val Loss: 1.0148 - Val Accuracy: 50.00% - Majority Baseline: 34.62%
+Epoch [26/30] - Train Loss: 0.7595 - Train Accuracy: 64.74% - Val Loss: 0.9830 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [27/30] - Train Loss: 0.6866 - Train Accuracy: 78.85% - Val Loss: 1.0285 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [28/30] - Train Loss: 0.7753 - Train Accuracy: 66.67% - Val Loss: 0.9975 - Val Accuracy: 51.92% - Majority Baseline: 34.62%
+Epoch [29/30] - Train Loss: 0.7239 - Train Accuracy: 75.00% - Val Loss: 1.0440 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [30/30] - Train Loss: 0.6834 - Train Accuracy: 76.28% - Val Loss: 1.0107 - Val Accuracy: 50.00% - Majority Baseline: 34.62%
+
+Best epoch: 26
+Best Val Loss: 0.9830
+Best Val Accuracy: 51.92%
+Majority Baseline Accuracy: 32.69%
+
+========== Fold 4/4 ==========
+
+Train stratification-bin counts:
+  low (0): 52
+  medium (1): 52
+  high (2): 52
+
+Validation stratification-bin counts:
+  low (0): 17
+  medium (1): 17
+  high (2): 18
+
+Epoch [1/30] - Train Loss: 1.1129 - Train Accuracy: 31.41% - Val Loss: 1.0704 - Val Accuracy: 44.23% - Majority Baseline: 32.69%
+Epoch [2/30] - Train Loss: 1.0673 - Train Accuracy: 46.15% - Val Loss: 1.0488 - Val Accuracy: 57.69% - Majority Baseline: 34.62%
+Epoch [3/30] - Train Loss: 1.0277 - Train Accuracy: 50.64% - Val Loss: 1.0358 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [4/30] - Train Loss: 1.0010 - Train Accuracy: 53.21% - Val Loss: 1.0214 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [5/30] - Train Loss: 0.9601 - Train Accuracy: 57.69% - Val Loss: 1.0353 - Val Accuracy: 46.15% - Majority Baseline: 32.69%
+Epoch [6/30] - Train Loss: 0.9269 - Train Accuracy: 56.41% - Val Loss: 1.0172 - Val Accuracy: 53.85% - Majority Baseline: 32.69%
+Epoch [7/30] - Train Loss: 0.9566 - Train Accuracy: 55.77% - Val Loss: 1.0295 - Val Accuracy: 48.08% - Majority Baseline: 34.62%
+Epoch [8/30] - Train Loss: 0.9030 - Train Accuracy: 62.18% - Val Loss: 1.0010 - Val Accuracy: 55.77% - Majority Baseline: 32.69%
+Epoch [9/30] - Train Loss: 0.8878 - Train Accuracy: 67.31% - Val Loss: 0.9903 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [10/30] - Train Loss: 0.8803 - Train Accuracy: 66.03% - Val Loss: 0.9923 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [11/30] - Train Loss: 0.8661 - Train Accuracy: 66.03% - Val Loss: 1.0144 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [12/30] - Train Loss: 0.8725 - Train Accuracy: 66.03% - Val Loss: 0.9823 - Val Accuracy: 53.85% - Majority Baseline: 32.69%
+Epoch [13/30] - Train Loss: 0.8554 - Train Accuracy: 66.67% - Val Loss: 1.0019 - Val Accuracy: 50.00% - Majority Baseline: 34.62%
+Epoch [14/30] - Train Loss: 0.8433 - Train Accuracy: 68.59% - Val Loss: 0.9960 - Val Accuracy: 53.85% - Majority Baseline: 32.69%
+Epoch [15/30] - Train Loss: 0.8245 - Train Accuracy: 66.67% - Val Loss: 0.9935 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [16/30] - Train Loss: 0.8720 - Train Accuracy: 69.23% - Val Loss: 0.9784 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [17/30] - Train Loss: 0.8250 - Train Accuracy: 67.31% - Val Loss: 0.9805 - Val Accuracy: 53.85% - Majority Baseline: 34.62%
+Epoch [18/30] - Train Loss: 0.7756 - Train Accuracy: 69.23% - Val Loss: 0.9694 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [19/30] - Train Loss: 0.8577 - Train Accuracy: 63.46% - Val Loss: 0.9705 - Val Accuracy: 53.85% - Majority Baseline: 34.62%
+Epoch [20/30] - Train Loss: 0.7729 - Train Accuracy: 71.79% - Val Loss: 0.9519 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [21/30] - Train Loss: 0.8087 - Train Accuracy: 63.46% - Val Loss: 0.9597 - Val Accuracy: 59.62% - Majority Baseline: 32.69%
+Epoch [22/30] - Train Loss: 0.7390 - Train Accuracy: 73.08% - Val Loss: 0.9397 - Val Accuracy: 53.85% - Majority Baseline: 32.69%
+Epoch [23/30] - Train Loss: 0.7935 - Train Accuracy: 69.23% - Val Loss: 0.9727 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [24/30] - Train Loss: 0.7104 - Train Accuracy: 80.13% - Val Loss: 0.9612 - Val Accuracy: 50.00% - Majority Baseline: 34.62%
+Epoch [25/30] - Train Loss: 0.7541 - Train Accuracy: 73.72% - Val Loss: 0.9554 - Val Accuracy: 53.85% - Majority Baseline: 32.69%
+Epoch [26/30] - Train Loss: 0.7642 - Train Accuracy: 72.44% - Val Loss: 0.9690 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [27/30] - Train Loss: 0.7368 - Train Accuracy: 78.21% - Val Loss: 0.9749 - Val Accuracy: 51.92% - Majority Baseline: 32.69%
+Epoch [28/30] - Train Loss: 0.7292 - Train Accuracy: 73.72% - Val Loss: 0.9467 - Val Accuracy: 50.00% - Majority Baseline: 32.69%
+Epoch [29/30] - Train Loss: 0.7419 - Train Accuracy: 69.87% - Val Loss: 0.9492 - Val Accuracy: 57.69% - Majority Baseline: 32.69%
+Epoch [30/30] - Train Loss: 0.6880 - Train Accuracy: 78.85% - Val Loss: 0.9723 - Val Accuracy: 53.85% - Majority Baseline: 34.62%
+
+Best epoch: 22
+Best Val Loss: 0.9397
+Best Val Accuracy: 53.85%
+Majority Baseline Accuracy: 32.69%
+
+========== Cross-Validation Summary ==========
+Task: bin_classification
+Backbone: resnet50
+loss: 0.9469 ± 0.0321
+accuracy: 0.5481 ± 0.0396
+baseline_accuracy: 0.3269 ± 0.0000

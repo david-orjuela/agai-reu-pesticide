@@ -10,7 +10,7 @@ class agai_correct_v3(Dataset):
         if csv_file.exists():
             print("CSV path exists. Continuing...")
 
-        self.icp_data = pd.read_csv(csv_file, encoding="cp1252")
+        self.icp_data = pd.read_csv(csv_file, encoding="utf-8")
         self.transform = transform
 
     def __len__(self):

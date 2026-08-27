@@ -74,14 +74,12 @@ image_path,sample_id,nominal_treatment,total_mg,area_cm2,mg_cm2,residue_bin
 /home/davidorjuela/dev/agai-reu-pesticide/datasets/agai_correct/batch_2_v1/coco/train/largest_leaf_crop/8-4-10_jpg.rf.7ff4b577818fa21fb4b50a2835b3d138.jpg,800 ppm 4 10,800,5.079,2.837073658,1.790224933,low
 /home/davidorjuela/dev/agai-reu-pesticide/datasets/agai_correct/batch_2_v1/coco/train/largest_leaf_crop/4-5-10_jpg.rf.a4927e8bb5d8eeb32097d2f28c9b56b2.jpg,400 ppm 5 10,400,21.65,3.52,6.150568182,high
 /home/davidorjuela/dev/agai-reu-pesticide/datasets/agai_correct/batch_2_v1/coco/train/largest_leaf_crop/8-3-10_jpg.rf.aa870f8f37ebaf16af2c23fd592203c4.jpg,800 ppm 3 10,800,13.92,5.426377909,2.565247064,medium
-/home/davidorjuela/dev/agai-reu-pesticide/datasets/agai_correct/batch_2_v1/coco/train/largest_leaf_crop/c1_jpg.rf.093e91a3a0d8465d47b375d5bdefd22c.jpg,c 1,c,4.111,nan,nan,high
 /home/davidorjuela/dev/agai-reu-pesticide/datasets/agai_correct/batch_2_v1/coco/train/largest_leaf_crop/6-4-2_jpg.rf.f158a661762c8bb6073d5927e3e53cdc.jpg,600 ppm 4 2,600,13.46,20.76723867,0.648136241,low
 /home/davidorjuela/dev/agai-reu-pesticide/datasets/agai_correct/batch_2_v1/coco/train/largest_leaf_crop/10-2-5_jpg.rf.760861d997b0e80d321fd596c87a1799.jpg,1000 ppm 2 5,1000,28.86,7.553349073,3.820821694,high
 /home/davidorjuela/dev/agai-reu-pesticide/datasets/agai_correct/batch_2_v1/coco/train/largest_leaf_crop/4-2-4_jpg.rf.7e80efaeecfeedc2e2d03808187d461f.jpg,400 ppm 2 4,400,8.805,4.108781102,2.142971305,medium
 /home/davidorjuela/dev/agai-reu-pesticide/datasets/agai_correct/batch_2_v1/coco/train/largest_leaf_crop/6-4-6_jpg.rf.55601ecd381d5f90ad8d40609cbf1510.jpg,600 ppm 4 6,600,16.38,25.63789619,0.638897977,low
 /home/davidorjuela/dev/agai-reu-pesticide/datasets/agai_correct/batch_2_v1/coco/train/largest_leaf_crop/8-2-9_jpg.rf.c4ea66d50d4b82eeb500fdcb3262b250.jpg,800 ppm 2 9,800,25.46,5.63299844,4.519795322,high
 /home/davidorjuela/dev/agai-reu-pesticide/datasets/agai_correct/batch_2_v1/coco/train/largest_leaf_crop/c6_jpg.rf.1437a5a54be1d3083f4d2ad4e9ec24d6.jpg,c 6,c,0.3264,5.119194462,0.063760031,low
-/home/davidorjuela/dev/agai-reu-pesticide/datasets/agai_correct/batch_2_v1/coco/train/largest_leaf_crop/6-2-9_jpg.rf.3c07cb177b15039631686adfa392b793.jpg,600 ppm 2 9,600,15.72,nan,nan,high
 /home/davidorjuela/dev/agai-reu-pesticide/datasets/agai_correct/batch_2_v1/coco/train/largest_leaf_crop/4-4-9_jpg.rf.cf9f201f3922b6b880e0474f3268ca9a.jpg,400 ppm 4 9,400,8.951,16.62173643,0.538511728,low
 /home/davidorjuela/dev/agai-reu-pesticide/datasets/agai_correct/batch_2_v1/coco/train/largest_leaf_crop/4-2-10_jpg.rf.6ca2dafb55ac5601f52ad1311637885a.jpg,400 ppm 2 10,400,12.37,6.099540611,2.028021582,medium
 /home/davidorjuela/dev/agai-reu-pesticide/datasets/agai_correct/batch_2_v1/coco/train/largest_leaf_crop/c7_jpg.rf.c01cc105bee6c005608ea3185fa6ecaf.jpg,c 7,c,0.1234,5.08932789,0.024246817,low

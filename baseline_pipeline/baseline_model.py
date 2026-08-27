@@ -34,6 +34,7 @@ def frozen_resnet(num_bins=3):
     return model_pretrained
 
 def frozen_dinoV3():
-    dinov3_vits16 = torch.hub.load(REPO_DIR, 'dinov3_vits16', source='local', weights=>)
+    # dinov3_vits16 = torch.hub.load(REPO_DIR, 'dinov3_vits16', source='local', weights=>)
 
-    return 
+    # return
+    pass
