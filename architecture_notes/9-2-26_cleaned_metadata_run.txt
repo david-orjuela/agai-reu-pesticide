@@ -235,7 +235,12 @@ Saved out-of-fold predictions to results/oof_bin_classification_resnet50.csv
 
 
 
+
+
+======================
 Regression Run Results
+======================
+
 uv run python -m baseline_pipeline.train
 Currently on cuda
 Task: icp_regression | Backbone: resnet50

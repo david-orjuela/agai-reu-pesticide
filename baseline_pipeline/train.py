@@ -10,6 +10,8 @@ automatically.
 """
 
 import csv
+import random
+from datetime import datetime
 from collections import Counter
 from dataclasses import asdict, dataclass
 from enum import Enum
@@ -26,7 +28,7 @@ from sklearn.model_selection import StratifiedKFold
 from torch.utils.data import DataLoader, Dataset, Subset
 from torchvision import transforms
 
-from baseline_pipeline.baseline_model import frozen_resnet
+from baseline_pipeline.baseline_model import frozen_resnet, frozen_dinov3
 from baseline_pipeline.dataset import agai_correct_v3
 
 
@@ -45,6 +47,14 @@ class ExperimentConfig:
     # These are the primary experiment toggles.
     task: Task = Task.ICP_REGRESSION
     backbone: Backbone = Backbone.RESNET50
+    dinov3_repo_dir: str = "/home/davidorjuela/dev/dinov3"
+    dinov3_weights_path: str = (
+        "/home/davidorjuela/dev/agai-reu-pesticide/checkpoints/"
+        "dinov3_vits16plus_pretrain_lvd1689m-4057cbaa.pth"
+    )
+    # auto: DINO uses Meta's 256-square transform; ResNet retains legacy 224 crop.
+    # Use legacy_224 for BOTH backbones for a controlled preprocessing comparison.
+    preprocessing: str = "auto"  # auto | dinov3_256 | legacy_224
 
     csv_path: str = (
         "/home/davidorjuela/dev/agai-reu-pesticide/"
@@ -76,11 +86,10 @@ class ExperimentConfig:
         return 1
 
 
-# To switch experiments, change only these settings. DINOv3 is wired into the
-# model factory below and will work once frozen_dinoV3 is implemented.
+# Switch tasks/backbones here; all existing metrics and exports are retained.
 CONFIG = ExperimentConfig(
-    task=Task.ICP_REGRESSION,
-    backbone=Backbone.RESNET50,
+    task=Task.BIN_CLASSIFICATION,
+    backbone=Backbone.DINOV3,
     random_seeds=(42,)
 )
 
@@ -118,11 +127,32 @@ class ExperimentDataset(Dataset):
         return image, target
 
 
-def make_transforms():
+class EnsureRGB:
+    """The base dataset should pass its unnormalized PIL crop to this transform."""
+
+    def __call__(self, image):
+        return image.convert("RGB")
+
+
+def preprocessing_name(config: ExperimentConfig) -> str:
+    if config.preprocessing == "auto":
+        return "dinov3_256" if config.backbone == Backbone.DINOV3 else "legacy_224"
+    if config.preprocessing not in ("dinov3_256", "legacy_224"):
+        raise ValueError(f"Unknown preprocessing: {config.preprocessing}")
+    return config.preprocessing
+
+
+def make_transforms(config: ExperimentConfig):
+    mode = preprocessing_name(config)
+    spatial = (
+        [transforms.Resize((256, 256), antialias=True)]
+        if mode == "dinov3_256"
+        else [transforms.Resize(256), transforms.CenterCrop(224)]
+    )
     train_transform = transforms.Compose(
         [
-            transforms.Resize(256),
-            transforms.CenterCrop(224),
+            EnsureRGB(),
+            *spatial,
             transforms.RandomHorizontalFlip(),
             transforms.ToTensor(),
             transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD),
@@ -130,8 +160,8 @@ def make_transforms():
     )
     val_transform = transforms.Compose(
         [
-            transforms.Resize(256),
-            transforms.CenterCrop(224),
+            EnsureRGB(),
+            *spatial,
             transforms.ToTensor(),
             transforms.Normalize(mean=IMAGENET_MEAN, std=IMAGENET_STD),
         ]
@@ -212,7 +242,7 @@ def read_sample_ids(base_dataset, config: ExperimentConfig) -> List[str]:
 
 
 def build_datasets(config: ExperimentConfig):
-    train_transform, val_transform = make_transforms()
+    train_transform, val_transform = make_transforms(config)
     train_base = agai_correct_v3(config.csv_path, transform=train_transform)
     val_base = agai_correct_v3(config.csv_path, transform=val_transform)
     class_targets = read_class_targets(train_base, config)
@@ -227,22 +257,16 @@ def build_datasets(config: ExperimentConfig):
     return train_dataset, val_dataset, class_targets
 
 
-def build_resnet(num_outputs: int) -> nn.Module:
-    return frozen_resnet(num_bins=num_outputs)
+def build_resnet(config: ExperimentConfig) -> nn.Module:
+    return frozen_resnet(num_bins=config.num_outputs)
 
 
-def build_dinov3(num_outputs: int) -> nn.Module:
-    """Load DINOv3 only when selected, so unfinished code does not block ResNet."""
-
-    try:
-        from baseline_pipeline.baseline_model import frozen_dinoV3
-    except (ImportError, AttributeError) as exc:
-        raise NotImplementedError(
-            "Backbone.DINOV3 is selected, but frozen_dinoV3 is not implemented "
-            "in baseline_pipeline.baseline_model yet."
-        ) from exc
-
-    return frozen_dinoV3(num_bins=num_outputs)
+def build_dinov3(config: ExperimentConfig) -> nn.Module:
+    return frozen_dinov3(
+        num_bins=config.num_outputs,
+        repo_dir=config.dinov3_repo_dir,
+        weights_path=config.dinov3_weights_path,
+    )
 
 
 MODEL_BUILDERS = {
@@ -256,7 +280,10 @@ def build_model(config: ExperimentConfig, device: torch.device) -> nn.Module:
         model_builder = MODEL_BUILDERS[config.backbone]
     except KeyError as exc:
         raise ValueError(f"Unsupported backbone: {config.backbone}") from exc
-    return model_builder(config.num_outputs).to(device)
+    model = model_builder(config).to(device)
+    print(f"Parameters: {sum(p.numel() for p in model.parameters()):,} total; "
+          f"{sum(p.numel() for p in model.parameters() if p.requires_grad):,} trainable")
+    return model
 
 
 def build_criterion(config: ExperimentConfig) -> nn.Module:
@@ -530,8 +557,12 @@ def save_plots(
 ) -> List[Path]:
     config.plot_dir.mkdir(parents=True, exist_ok=True)
     scope = f"seed_{seed}_all_folds" if fold is None else f"seed_{seed}_fold_{fold + 1}"
+
+    now = datetime.now()
+    formatted_date = now.strftime("%Y-%m-%d_%H-%M-%S")
+
     prefix = (
-        f"{config.task.value}_{config.backbone.value}_{scope}"
+        f"{formatted_date}_{config.task.value}_{config.backbone.value}_{scope}"
     )
     saved_paths = []
 
@@ -650,8 +681,12 @@ def save_oof_predictions(
         raise ValueError("No out-of-fold predictions were provided.")
 
     config.results_dir.mkdir(parents=True, exist_ok=True)
+
+    now = datetime.now()
+    formatted_date = now.strftime("%Y-%m-%d_%H%M%S")
+    
     output_path = config.results_dir / (
-        f"oof_{config.task.value}_{config.backbone.value}.csv"
+        f"{formatted_date}_oof_{config.task.value}_{config.backbone.value}.csv"
     )
     with output_path.open("w", newline="", encoding="utf-8") as output_file:
         writer = csv.DictWriter(output_file, fieldnames=list(rows[0].keys()))
@@ -827,6 +862,7 @@ def summarize_results(
 
 
 def set_random_seed(seed: int) -> None:
+    random.seed(seed)
     torch.manual_seed(seed)
     np.random.seed(seed)
     if torch.cuda.is_available():
@@ -840,6 +876,7 @@ def main(config: ExperimentConfig = CONFIG) -> None:
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Currently on {device}")
     print(f"Task: {config.task.value} | Backbone: {config.backbone.value}")
+    print(f"Preprocessing: {preprocessing_name(config)} | Precision: float32")
 
     if not config.random_seeds:
         raise ValueError("CONFIG.random_seeds must contain at least one seed.")
