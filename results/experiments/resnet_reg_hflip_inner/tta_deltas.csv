@@ -1,0 +1,2 @@
+seed,inference,delta_mae,delta_rmse,delta_r2,delta_pearson_r,delta_spearman_r,delta_residual_mean,delta_target_std,delta_prediction_std,delta_negative_predictions,delta_train_mean_baseline_mae,delta_train_median_baseline_mae
+42,d4_mean,0.057860345611101094,0.042453190087068604,-0.04287048286609185,-0.023352114617543385,-0.008530942741469039,-0.236835924917431,0.0,-0.09653296891808161,0,0.0,0.0
