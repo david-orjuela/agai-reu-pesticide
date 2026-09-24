@@ -40,6 +40,12 @@ from baseline_pipeline.experiment_protocol import (
     write_csv, distribution_rows,
 )
 
+from baseline_pipeline.tree_ordinal import (
+    resolve_tree_groups, CoralModel, ordinal_probabilities,
+    classification_loss, decision_metrics, validate_ordinal_config,
+    write_tree_bootstrap,
+)
+
 
 class Task(str, Enum):
     BIN_CLASSIFICATION='bin_classification'
@@ -59,7 +65,13 @@ class ExperimentConfig:
     residue_column: str = 'mg_cm2'
     residue_bin_column: str = 'residue_bin'
     sample_id_column: str = 'sample_id'
-    group_column: Optional[str] = None
+    group_column: Optional[str] = None  # None derives treatment + tree.
+    loss: str = 'ce'  # ce | coral | ce_rps | rps
+    rps_weight: float = 1.0
+    learning_rates: Tuple[float,...] = ()  # Empty uses learning_rate.
+    regression_bins: bool = False
+    bootstrap_replicates: int = 1000
+    bootstrap_seed: int = 2026
     class_names: Tuple[str,...] = CLASS_NAMES
     dinov3_repo_dir: str = '/home/davidorjuela/dev/dinov3'
     dinov3_weights_path: str = '/home/davidorjuela/dev/agai-reu-pesticide/checkpoints/dinov3_vits16plus_pretrain_lvd1689m-4057cbaa.pth'
@@ -150,10 +162,22 @@ def build_dinov3(config):
 MODEL_BUILDERS={Backbone.RESNET50:build_resnet,Backbone.DINOV3:build_dinov3}
 
 
-def build_model(config,device):
-    model=MODEL_BUILDERS[config.backbone](config).to(device)
-    print(f'Parameters: {sum(p.numel() for p in model.parameters()):,} total; '
-          f'{sum(p.numel() for p in model.parameters() if p.requires_grad):,} trainable')
+def build_model(config, device):
+    use_coral = (
+        config.task == Task.BIN_CLASSIFICATION and config.loss == 'coral'
+    )
+    # Existing builders already support a scalar head for regression.
+    builder_config = (
+        replace(config, task=Task.ICP_REGRESSION) if use_coral else config
+    )
+    model = MODEL_BUILDERS[config.backbone](builder_config)
+    if use_coral:
+        model = CoralModel(model)
+    model = model.to(device)
+    print(
+        f'Parameters: {sum(p.numel() for p in model.parameters()):,} total; '
+        f'{sum(p.numel() for p in model.parameters() if p.requires_grad):,} trainable'
+    )
     return model
 
 
@@ -173,63 +197,180 @@ def loader(base,idx,labels,residue,config,seed,training=False):
                       num_workers=config.num_workers,generator=torch.Generator().manual_seed(seed))
 
 
-def run_epoch(model,data,config,device,optimizer=None):
-    training=optimizer is not None
+def run_epoch(model, data, config, device, optimizer=None):
+    training = optimizer is not None
     model.train(training)
-    if config.backbone==Backbone.RESNET50 and config.freeze_resnet_bn:
-        # Frozen parameters alone do not freeze BatchNorm running statistics.
+    if config.backbone == Backbone.RESNET50 and config.freeze_resnet_bn:
         model.eval()
         model.fc.train(training)
-    criterion=nn.CrossEntropyLoss() if config.task==Task.BIN_CLASSIFICATION else nn.SmoothL1Loss()
-    y,p,prob=[],[],[]
-    loss_sum=0.
+
+    y, prediction, probabilities_all = [], [], []
+    loss_sum = 0.0
     with torch.set_grad_enabled(training):
-        for images,target in data:
-            images,target=images.to(device),target.to(device)
-            if training:optimizer.zero_grad(set_to_none=True)
-            output=model(images)
-            if config.task==Task.ICP_REGRESSION:output=output.reshape(-1)
-            loss=criterion(output,target)
-            if not torch.isfinite(loss):raise ValueError('Nonfinite loss; inspect targets and optimizer.')
+        for images, target in data:
+            images, target = images.to(device), target.to(device)
+            if training:
+                optimizer.zero_grad(set_to_none=True)
+            output = model(images)
+
+            if config.task == Task.BIN_CLASSIFICATION:
+                loss = classification_loss(output, target, config)
+            else:
+                output = output.reshape(-1)
+                loss = nn.functional.smooth_l1_loss(output, target)
+
+            if not torch.isfinite(loss):
+                raise ValueError('Nonfinite loss; inspect targets and optimizer.')
             if training:
                 loss.backward()
                 optimizer.step()
+
             y.extend(target.detach().cpu().tolist())
-            if config.task==Task.BIN_CLASSIFICATION:
-                probabilities=output.softmax(1)
-                prob.extend(probabilities.detach().cpu().tolist())
-                p.extend(probabilities.argmax(1).detach().cpu().tolist())
-            else:p.extend(output.detach().cpu().tolist())
-            loss_sum+=loss.item()*len(images)
-    metrics=(classification_metrics(y,p,prob) if config.task==Task.BIN_CLASSIFICATION
-             else regression_metrics(y,p))
-    metrics['loss']=loss_sum/len(data.dataset)
+            if config.task == Task.BIN_CLASSIFICATION:
+                probabilities = ordinal_probabilities(output, config)
+                probabilities_all.extend(
+                    probabilities.detach().cpu().tolist()
+                )
+                prediction.extend(
+                    probabilities.argmax(1).detach().cpu().tolist()
+                )
+            else:
+                prediction.extend(output.detach().cpu().tolist())
+            loss_sum += loss.item() * len(images)
+
+    metrics = (
+        classification_metrics(y, prediction, probabilities_all)
+        if config.task == Task.BIN_CLASSIFICATION
+        else regression_metrics(y, prediction)
+    )
+    metrics['loss'] = loss_sum / len(data.dataset)
     return metrics
 
 
-def fit_model(train_idx,validation_idx,base,labels,residue,config,device,seed,stage,history,fixed_epochs=None):
+def fit_model(
+    train_idx, validation_idx, base, labels, residue, config, device,
+    seed, stage, history, fixed_epochs=None,
+):
     set_random_seed(seed)
-    model=build_model(config,device)
-    optimizer=torch.optim.SGD([p for p in model.parameters() if p.requires_grad],
-                              lr=config.learning_rate,momentum=config.momentum)
-    train_loader=loader(base,train_idx,labels,residue,config,seed,True)
-    val_loader=None if validation_idx is None else loader(base,validation_idx,labels,residue,config,seed)
-    best,best_state,best_epoch=float('inf'),None,0
-    for epoch in range(1,(fixed_epochs or config.epochs)+1):
-        train_metrics=run_epoch(model,train_loader,config,device,optimizer)
-        row={'stage':stage,'epoch':epoch,**{'train_'+k:v for k,v in train_metrics.items()}}
+    model = build_model(config, device)
+
+    # Head dimensions consume different amounts of initialization RNG.
+    # Reset so training augmentation starts from the same RNG state.
+    set_random_seed(seed)
+
+    optimizer = torch.optim.SGD(
+        [p for p in model.parameters() if p.requires_grad],
+        lr=config.learning_rate, momentum=config.momentum,
+    )
+    train_loader = loader(
+        base, train_idx, labels, residue, config, seed, True,
+    )
+    val_loader = (
+        None if validation_idx is None
+        else loader(base, validation_idx, labels, residue, config, seed)
+    )
+
+    classification = config.task == Task.BIN_CLASSIFICATION
+    selection_metric = 'macro_f1' if classification else 'mae'
+    best = -float('inf') if classification else float('inf')
+    best_state, best_epoch = None, 0
+    epoch_limit = config.epochs if fixed_epochs is None else fixed_epochs
+
+    for epoch in range(1, epoch_limit + 1):
+        train_metrics = run_epoch(
+            model, train_loader, config, device, optimizer,
+        )
+        row = {
+            'stage': stage, 'epoch': epoch,
+            'learning_rate': config.learning_rate,
+            'objective': config.loss if classification else 'smooth_l1',
+            'rps_weight': config.rps_weight,
+            'selection_metric': selection_metric,
+            **{'train_' + k: v for k, v in train_metrics.items()},
+        }
         if val_loader is not None:
-            metrics=run_epoch(model,val_loader,config,device)
-            row.update({'validation_'+k:v for k,v in metrics.items()})
-            if metrics['loss']<best:
-                best,best_epoch=metrics['loss'],epoch
-                best_state={k:v.detach().cpu().clone() for k,v in model.state_dict().items()}
-        else:best_epoch=epoch
+            metrics = run_epoch(model, val_loader, config, device)
+            row.update({'validation_' + k: v for k, v in metrics.items()})
+            value = metrics[selection_metric]
+            if not np.isfinite(value):
+                raise ValueError('Nonfinite inner selection metric.')
+            improved = value > best if classification else value < best
+            # Exact ties retain the earliest epoch.
+            if improved:
+                best, best_epoch = value, epoch
+                best_state = {
+                    k: v.detach().cpu().clone()
+                    for k, v in model.state_dict().items()
+                }
+            message = f' | validation {selection_metric} {value:.4f}'
+        else:
+            best_epoch = epoch
+            message = ''
+
         history.append(row)
-        print(f'{stage} epoch {epoch}: train loss {train_metrics["loss"]:.4f}' +
-              (f' | selection loss {metrics["loss"]:.4f}' if val_loader is not None else ''))
-    if best_state is not None:model.load_state_dict(best_state)
-    return model,best_epoch
+        print(
+            f'{stage} epoch {epoch}: '
+            f'train loss {train_metrics["loss"]:.4f}{message}'
+        )
+
+    if best_state is not None:
+        model.load_state_dict(best_state)
+    return model, best_epoch
+
+
+def tune_and_refit(
+    inner_train, inner_val, train_idx, base, selection_labels, labels,
+    residue, config, device, fold_seed, history, out, seed, fold,
+):
+    classification = config.task == Task.BIN_CLASSIFICATION
+    metric_name = 'macro_f1' if classification else 'mae'
+    rates = config.learning_rates or (config.learning_rate,)
+    best_score = -float('inf')
+    chosen_config, chosen_epoch, chosen_candidate = None, None, None
+    trials = []
+
+    for candidate, rate in enumerate(rates, 1):
+        candidate_config = replace(config, learning_rate=rate)
+        candidate_history = []
+        candidate_model, epoch = fit_model(
+            inner_train, inner_val, base, selection_labels, residue,
+            candidate_config, device, fold_seed,
+            f'inner_candidate_{candidate}', candidate_history,
+        )
+        history.extend(candidate_history)
+        value = next(
+            row['validation_' + metric_name]
+            for row in candidate_history if row['epoch'] == epoch
+        )
+        score = value if classification else -value
+        trials.append({
+            'candidate': candidate,
+            'learning_rate': rate,
+            'rps_weight': config.rps_weight,
+            'selected_epoch': epoch,
+            'selection_metric': metric_name,
+            'selection_value': value,
+        })
+        # Exact candidate ties retain the earlier declared candidate.
+        if score > best_score:
+            best_score = score
+            chosen_config, chosen_epoch = candidate_config, epoch
+            chosen_candidate = candidate
+        del candidate_model
+
+    for trial in trials:
+        trial['selected'] = trial['candidate'] == chosen_candidate
+    write_csv(out / f'tuning_seed_{seed}_fold_{fold}.csv', trials)
+
+    print(
+        f'Selected learning rate {chosen_config.learning_rate:g}, '
+        f'epoch {chosen_epoch}, using inner {metric_name}.'
+    )
+    model, _ = fit_model(
+        train_idx, None, base, labels, residue, chosen_config, device,
+        fold_seed, 'outer_refit', history, chosen_epoch,
+    )
+    return model, chosen_epoch, chosen_config
 
 
 def transformations(mode):
@@ -251,7 +392,7 @@ def predict_views(model,bases,indices,labels,residue,config,device,mode):
                     image=torch.rot90(images,k,[-2,-1])
                     if flip:image=torch.flip(image,[-1])
                     output=model(image.contiguous())
-                    output=output.softmax(1) if config.task==Task.BIN_CLASSIFICATION else output.reshape(-1)
+                    output=ordinal_probabilities(output,config) if config.task==Task.BIN_CLASSIFICATION else output.reshape(-1)
                     pieces[j].append(output.cpu().numpy())
             for (k,flip),parts in zip(transformations(mode),pieces):
                 views.append(np.concatenate(parts))
@@ -282,15 +423,31 @@ def plot_results(rows,config,out,prefix):
     fig.tight_layout();fig.savefig(out/f'{prefix}.png',dpi=180);plt.close(fig)
 
 
-def row_metrics(rows,config):
-    y=[r['target'] for r in rows];p=[r['prediction'] for r in rows]
-    if config.task==Task.BIN_CLASSIFICATION:
-        metrics=classification_metrics(y,p,[[r['probability_'+c] for c in CLASS_NAMES] for r in rows])
-        metrics['majority_baseline_accuracy']=float(np.mean(np.array(y)==[r['baseline_prediction'] for r in rows]))
+def row_metrics(rows, config):
+    y = np.asarray([r['target'] for r in rows])
+    prediction = np.asarray([r['prediction'] for r in rows])
+    if config.task == Task.BIN_CLASSIFICATION:
+        metrics = classification_metrics(
+            y, prediction,
+            [[r['probability_' + c] for c in CLASS_NAMES] for r in rows],
+        )
+        metrics['majority_baseline_accuracy'] = float(np.mean(
+            y == [r['baseline_prediction'] for r in rows]
+        ))
     else:
-        metrics=regression_metrics(y,p)
-        metrics['train_mean_baseline_mae']=float(np.mean(np.abs(np.array(y)-[r['baseline_prediction'] for r in rows])))
-        metrics['train_median_baseline_mae']=float(np.mean(np.abs(np.array(y)-[r['baseline_median'] for r in rows])))
+        metrics = regression_metrics(y, prediction)
+        metrics['train_mean_baseline_mae'] = float(np.mean(np.abs(
+            y - [r['baseline_prediction'] for r in rows]
+        )))
+        metrics['train_median_baseline_mae'] = float(np.mean(np.abs(
+            y - [r['baseline_median'] for r in rows]
+        )))
+        if config.regression_bins:
+            discrete = decision_metrics(
+                [r['target_bin'] for r in rows],
+                [r['prediction_bin'] for r in rows],
+            )
+            metrics.update({'binned_' + k: v for k, v in discrete.items()})
     return metrics
 
 
@@ -303,17 +460,50 @@ def load_checkpoint(path):
     return torch.load(path,map_location='cpu',weights_only=False)
 
 
-def check_saved_config(checkpoint,config):
-    saved=checkpoint.get('config',{})
-    for key in ('task','backbone','csv_path'):
-        if key not in saved:raise ValueError(f'Checkpoint missing {key}; cannot establish provenance.')
-        wanted=getattr(config,key);wanted=wanted.value if isinstance(wanted,Enum) else wanted
-        if key!='csv_path' and saved[key]!=wanted:raise ValueError(f'Checkpoint {key} mismatch.')
-    saved_pre=saved.get('preprocessing','auto')
-    if saved_pre=='auto':saved_pre='dinov3_256' if saved['backbone']=='dinov3' else 'legacy_224'
-    if saved_pre!=preprocessing_name(config):raise ValueError('Preprocessing differs from saved checkpoint.')
-    if tuple(saved.get('class_names',CLASS_NAMES))!=CLASS_NAMES:raise ValueError('Checkpoint class order differs.')
-    if saved.get('bin_policy','csv')!=config.bin_policy:raise ValueError('Checkpoint bin policy differs.')
+def check_saved_config(checkpoint, config):
+    saved = checkpoint.get('config', {})
+    for key in ('task', 'backbone', 'csv_path'):
+        if key not in saved:
+            raise ValueError(f'Checkpoint missing {key}; cannot establish provenance.')
+        wanted = getattr(config, key)
+        wanted = wanted.value if isinstance(wanted, Enum) else wanted
+        if key != 'csv_path' and saved[key] != wanted:
+            raise ValueError(f'Checkpoint {key} mismatch.')
+
+    if checkpoint.get('grouping_protocol') != 'treatment_tree_v1':
+        raise ValueError(
+            'Checkpoint lacks verified treatment/tree grouping. '
+            'Retrain before using it for unseen-tree evaluation.'
+        )
+    if saved.get('selection') not in ('inner_refit', 'fixed'):
+        raise ValueError('Checkpoint used an unsupported selection protocol.')
+
+    saved_pre = saved.get('preprocessing', 'auto')
+    if saved_pre == 'auto':
+        saved_pre = (
+            'dinov3_256' if saved['backbone'] == 'dinov3' else 'legacy_224'
+        )
+    if saved_pre != preprocessing_name(config):
+        raise ValueError('Preprocessing differs from saved checkpoint.')
+    if tuple(saved.get('class_names', CLASS_NAMES)) != CLASS_NAMES:
+        raise ValueError('Checkpoint class order differs.')
+    if saved.get('bin_policy', 'csv') != config.bin_policy:
+        raise ValueError('Checkpoint bin policy differs.')
+    if saved.get('freeze_resnet_bn', True) != config.freeze_resnet_bn:
+        raise ValueError('Checkpoint BatchNorm policy differs.')
+
+    for key in ('thresholds', 'quantiles'):
+        old, new = saved.get(key), getattr(config, key)
+        old = None if old is None else tuple(old)
+        new = None if new is None else tuple(new)
+        if old != new:
+            raise ValueError(f'Checkpoint {key} differs.')
+
+    if config.task == Task.BIN_CLASSIFICATION:
+        if saved.get('loss') != config.loss:
+            raise ValueError('Checkpoint classification objective differs.')
+        if config.loss == 'ce_rps' and saved.get('rps_weight') != config.rps_weight:
+            raise ValueError('Checkpoint RPS weight differs.')
 
 
 def json_config(config):
@@ -321,6 +511,7 @@ def json_config(config):
 
 
 def main(config=CONFIG):
+    validate_ordinal_config(config)
     if config.epochs<1 or config.folds<2 or not config.random_seeds:raise ValueError('Invalid epochs/folds/seeds.')
     if len(set(config.random_seeds))!=len(config.random_seeds):raise ValueError('Duplicate seeds.')
     if 'single' not in config.inference_modes:raise ValueError('Include single inference for a paired reference.')
@@ -347,7 +538,17 @@ def main(config=CONFIG):
         _,base_target=base[i]
         if not np.isclose(float(base_target),residue[i],rtol=1e-5,atol=1e-7):
             raise ValueError('Configured residue_column disagrees with the existing dataset loader target.')
-    groups=None if config.group_column is None else metadata[config.group_column].astype(str).to_numpy()
+    explicit_groups = (
+        None if config.group_column is None
+        else metadata[config.group_column].astype(str).to_numpy()
+    )
+    tree_ids, groups = resolve_tree_groups(ids, explicit_groups)
+    metadata['derived_tree_ID'] = tree_ids
+    metadata['split_group'] = groups
+    print(
+        f'{len(np.unique(tree_ids))} physical trees | '
+        f'{len(np.unique(groups))} split groups'
+    )
     bases={1.:base}
     if any(m in ('scale','d4_scale') for m in config.inference_modes):
         for scale in config.tta_scales:
@@ -365,6 +566,27 @@ def main(config=CONFIG):
     if config.backbone==Backbone.DINOV3:
         revision=subprocess.run(['git','-C',config.dinov3_repo_dir,'rev-parse','HEAD'],capture_output=True,text=True)
         manifest['dinov3_commit']=revision.stdout.strip() if revision.returncode==0 else None
+    manifest.update({
+        'grouping_protocol': 'treatment_tree_v1',
+        'group_ids_in_order': groups.tolist(),
+        'tree_ids_in_order': tree_ids.tolist(),
+        'n_trees': len(np.unique(tree_ids)),
+        'n_split_groups': len(np.unique(groups)),
+        'classification_primary_metric': 'macro_f1',
+        'regression_selection_metric': 'mae',
+        'classification_decoder': 'argmax_class_probability',
+        'rps_definition': 'mean_squared_CDF_error_over_K_minus_1_boundaries',
+        'coral_parameterization': 'shared_score_ordered_softplus_threshold_gap',
+        'inner_search_candidates': len(config.learning_rates or (config.learning_rate,)),
+        'bootstrap_note': (
+            'Whole groups resampled together across seeds. '
+            'Conditional on fitted models and CV splits; no bootstrap refitting.'
+        ),
+        'validation_note': (
+            'Both validation levels use tree groups. '
+            'Outer test is unused for tuning or epoch selection.'
+        ),
+    })
     (out/'manifest.json').write_text(json.dumps(manifest,indent=2))
     metadata.to_csv(out/'dataset_manifest.csv',index=False)
     print(f'{config.task.value} | {config.backbone.value} | {config.selection} | {preprocessing_name(config)}')
@@ -375,6 +597,8 @@ def main(config=CONFIG):
             splits=[]
             for fold in range(1,config.folds+1):
                 saved=load_checkpoint(checkpoint_path(config,seed,fold));check_saved_config(saved,config)
+                if saved.get('group_ids') != groups.tolist():
+                    raise ValueError('Checkpoint tree groups or sample order changed.')
                 test=np.asarray(saved['val_indices'],dtype=int)
                 splits.append((np.setdiff1d(np.arange(len(ids)),test),test))
             check_partition(splits,len(ids),groups)
@@ -384,14 +608,18 @@ def main(config=CONFIG):
             fold_seed=seed+fold-1  # Match the earlier script's zero-based fold RNG offset.
             labels,edges=assign_labels(residue,csv_labels,train_idx,config.bin_policy,config.thresholds,config.quantiles)
             if len(np.unique(labels[train_idx]))<3:raise ValueError('An outer training class is empty.')
-            threshold_rows.append({'seed':seed,'fold':fold,'policy':config.bin_policy,
+            threshold_rows.append({'seed':seed,'fold':fold,'stage':'outer','policy':config.bin_policy,
                                    'lower':None if edges is None else edges[0],'upper':None if edges is None else edges[1]})
             for role,idx in [('outer_train',train_idx),('outer_test',test_idx)]:
                 distributions.extend(distribution_rows(idx,labels,residue,seed,fold,role))
                 split_rows.extend({'seed':seed,'fold':fold,'role':role,'sample_id':ids[i],'dataset_index':i,
-                                   'group':None if groups is None else groups[i]} for i in idx)
+                                   'tree_ID':tree_ids[i],'group':groups[i]} for i in idx)
+            fit_config = config
             if config.evaluate_only:
                 path=checkpoint_path(config,seed,fold);saved=load_checkpoint(path)
+                fit_config = replace(
+                    config, learning_rate=saved['config']['learning_rate']
+                )
                 if saved.get('csv_sha256') and saved['csv_sha256']!=fingerprint:raise ValueError('CSV changed since checkpoint creation.')
                 if saved.get('sample_ids') is not None and saved['sample_ids']!=ids.tolist():raise ValueError('Checkpoint sample order changed.')
                 expected=labels[test_idx] if config.task==Task.BIN_CLASSIFICATION else residue[test_idx]
@@ -402,17 +630,43 @@ def main(config=CONFIG):
             else:
                 history=[]
                 if config.selection=='inner_refit':
-                    inner_train,inner_val=make_inner_split(train_idx,labels,fold_seed,groups,config.inner_fraction,config.inner_group_folds)
+                    # Stratify on the original CSV labels for matched splits.
+                    inner_train,inner_val=make_inner_split(
+                        train_idx,csv_labels,fold_seed,groups,
+                        config.inner_fraction,config.inner_group_folds
+                    )
+                    # For train_quantile, inner validation labels must use
+                    # thresholds fitted on inner TRAIN, not outer TRAIN.
+                    selection_labels,inner_edges=assign_labels(
+                        residue,csv_labels,inner_train,config.bin_policy,
+                        config.thresholds,config.quantiles
+                    )
+                    if len(np.unique(selection_labels[inner_train])) != 3:
+                        raise ValueError('An inner training class is empty.')
+                    threshold_rows.append({
+                        'seed':seed,'fold':fold,'stage':'inner',
+                        'policy':config.bin_policy,
+                        'lower':None if inner_edges is None else inner_edges[0],
+                        'upper':None if inner_edges is None else inner_edges[1],
+                    })
                     for role,idx in [('inner_train',inner_train),('inner_validation',inner_val)]:
-                        distributions.extend(distribution_rows(idx,labels,residue,seed,fold,role))
+                        distributions.extend(distribution_rows(idx,selection_labels,residue,seed,fold,role))
                         split_rows.extend({'seed':seed,'fold':fold,'role':role,'sample_id':ids[i],'dataset_index':i,
-                                           'group':None if groups is None else groups[i]} for i in idx)
-                    selection_model,epoch=fit_model(inner_train,inner_val,base,labels,residue,config,device,fold_seed,'inner_selection',history)
-                    del selection_model
-                    model,_=fit_model(train_idx,None,base,labels,residue,config,device,fold_seed,'outer_refit',history,epoch)
+                                           'tree_ID':tree_ids[i],'group':groups[i]} for i in idx)
+                    model,epoch,fit_config=tune_and_refit(
+                        inner_train,inner_val,train_idx,base,
+                        selection_labels,labels,residue,config,device,
+                        fold_seed,history,out,seed,fold
+                    )
                 else:
-                    val=test_idx if config.selection=='legacy_outer' else None
-                    model,epoch=fit_model(train_idx,val,base,labels,residue,config,device,fold_seed,config.selection,history)
+                    fit_config = replace(
+                        config,
+                        learning_rate=(config.learning_rates or (config.learning_rate,))[0]
+                    )
+                    model,epoch=fit_model(
+                        train_idx,None,base,labels,residue,fit_config,
+                        device,fold_seed,config.selection,history
+                    )
                 write_csv(out/f'history_seed_{seed}_fold_{fold}.csv',history)
                 selection_used=config.selection
             fold_rows=[];single=None
@@ -428,7 +682,9 @@ def main(config=CONFIG):
                         target=labels[i] if config.task==Task.BIN_CLASSIFICATION else residue[i]
                         row={'task':config.task.value,'backbone':config.backbone.value,'seed':seed,'fold':fold,'best_epoch':epoch,
                              'selection':selection_used,'inference':condition,'dataset_index':int(i),'sample_id':ids[i],
-                             'group':None if groups is None else groups[i],'residue_mg_cm2':residue[i],
+                             'objective':config.loss if config.task==Task.BIN_CLASSIFICATION else 'smooth_l1',
+                             'learning_rate':fit_config.learning_rate,'rps_weight':config.rps_weight,
+                             'tree_ID':tree_ids[i],'group':groups[i],'residue_mg_cm2':residue[i],
                              'target':int(target) if config.task==Task.BIN_CLASSIFICATION else float(target),
                              'prediction':float(aggregate[method][j]),'view_count':len(names),'view_instability':float(instability[j])}
                         if config.task==Task.BIN_CLASSIFICATION:
@@ -438,10 +694,20 @@ def main(config=CONFIG):
                             row.update({'probability_'+c:float(aggregate['probabilities'][j,k]) for k,c in enumerate(CLASS_NAMES)})
                         else:row.update({'residual':float(target-row['prediction']),'baseline_prediction':float(residue[train_idx].mean()),
                                          'baseline_median':float(np.median(residue[train_idx]))})
+                        if config.task == Task.ICP_REGRESSION:
+                            row['target_bin'] = int(labels[i])
+                            if config.regression_bins:
+                                if edges is None:
+                                    raise ValueError('Regression bin cutpoints are unavailable.')
+                                row['prediction_bin'] = int(np.searchsorted(
+                                    edges, row['prediction'], side='left'
+                                ))
+                                row['target_bin_label'] = CLASS_NAMES[row['target_bin']]
+                                row['prediction_bin_label'] = CLASS_NAMES[row['prediction_bin']]
                         fold_rows.append(row)
                 for v,name in enumerate(names):
                     for j,i in enumerate(test_idx):
-                        row={'seed':seed,'fold':fold,'sample_id':ids[i],'mode':mode,'view':name}
+                        row={'seed':seed,'fold':fold,'sample_id':ids[i],'tree_ID':tree_ids[i],'group':groups[i],'mode':mode,'view':name}
                         if config.task==Task.BIN_CLASSIFICATION:row.update({'probability_'+c:float(values[v,j,k]) for k,c in enumerate(CLASS_NAMES)})
                         else:row['prediction']=float(values[v,j])
                         all_views.append(row)
@@ -457,8 +723,11 @@ def main(config=CONFIG):
                         print(f'Checkpoint single-view replay matched (max difference {max_diff:g}).')
                     else:
                         # Preserve the completed fit before potentially expensive TTA.
-                        torch.save({'epoch':epoch-1,'fold':fold-1,'seed':seed,'config':json_config(config),
+                        torch.save({'epoch':epoch-1,'fold':fold-1,'seed':seed,'config':json_config(fit_config),
                                     'model_state_dict':model.state_dict(),'csv_sha256':fingerprint,'sample_ids':ids.tolist(),
+                                    'grouping_protocol':'treatment_tree_v1',
+                                    'group_ids':groups.tolist(),'tree_ids':tree_ids.tolist(),
+                                    'train_indices':train_idx,
                                     'val_indices':test_idx,'val_targets':labels[test_idx] if config.task==Task.BIN_CLASSIFICATION else residue[test_idx],
                                     'val_predictions':single.argmax(1) if config.task==Task.BIN_CLASSIFICATION else single,
                                     'val_probabilities':single if config.task==Task.BIN_CLASSIFICATION else None},
@@ -482,6 +751,7 @@ def main(config=CONFIG):
             summary.append({'seed':seed,'inference':condition,'n':len(rows),**row_metrics(rows,config)})
             plot_results(rows,config,out,f'seed_{seed}_pooled_{condition}')
     write_csv(out/'seed_metrics.csv',summary)
+    write_tree_bootstrap(all_rows,config,out,row_metrics)
     if len(config.random_seeds)>1:
         numeric=pd.DataFrame(summary).drop(columns=['n']).groupby('inference').agg(['mean','std']).drop(columns='seed',level=0)
         numeric.columns=['_'.join(c) for c in numeric.columns]
@@ -498,13 +768,20 @@ def main(config=CONFIG):
 
 def parse_config():
     p=argparse.ArgumentParser(description=__doc__)
+    p.add_argument('--loss',choices=['ce','coral','ce_rps','rps'])
+    p.add_argument('--rps-weight',type=float)
+    p.add_argument('--learning-rates',nargs='+',type=float)
+    p.add_argument('--inner-group-folds',type=int)
+    p.add_argument('--regression-bins',action='store_true',default=None)
+    p.add_argument('--bootstrap-replicates',type=int)
+    p.add_argument('--bootstrap-seed',type=int)
     p.add_argument('--task',choices=[t.value for t in Task]);p.add_argument('--backbone',choices=[b.value for b in Backbone])
     p.add_argument('--csv-path');p.add_argument('--group-column');p.add_argument('--residue-column');p.add_argument('--sample-id-column')
     p.add_argument('--preprocessing',choices=['auto','dinov3_256','legacy_224'])
     p.add_argument('--augmentation',choices=['none','hflip','d4','medium_d4'])
     p.add_argument('--bin-policy',choices=['csv','fixed','train_quantile'])
     p.add_argument('--thresholds',nargs=2,type=float);p.add_argument('--quantiles',nargs=2,type=float)
-    p.add_argument('--selection',choices=['inner_refit','fixed','legacy_outer'])
+    p.add_argument('--selection',choices=['inner_refit','fixed'])
     p.add_argument('--seeds',nargs='+',type=int);p.add_argument('--epochs',type=int);p.add_argument('--folds',type=int)
     p.add_argument('--batch-size',type=int);p.add_argument('--learning-rate',type=float);p.add_argument('--num-workers',type=int)
     p.add_argument('--inference-modes',nargs='+',choices=['single','d4','scale','d4_scale'])
@@ -517,7 +794,7 @@ def parse_config():
     args={k:v for k,v in vars(p.parse_args()).items() if v is not None}
     if args.pop('legacy_resnet_bn',False):args['freeze_resnet_bn']=False
     if 'seeds' in args:args['random_seeds']=tuple(args.pop('seeds'))
-    for key in ('thresholds','quantiles','inference_modes','tta_scales'):
+    for key in ('thresholds','quantiles','inference_modes','tta_scales','learning_rates'):
         if key in args:args[key]=tuple(args[key])
     if 'task' in args:args['task']=Task(args['task'])
     if 'backbone' in args:args['backbone']=Backbone(args['backbone'])

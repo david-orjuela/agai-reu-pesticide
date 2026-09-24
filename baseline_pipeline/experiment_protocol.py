@@ -22,12 +22,27 @@ def encode_bins(values):
 
 def assign_labels(residue, csv_labels, train_indices, policy='csv',
                   thresholds=None, quantiles=(1/3, 2/3)):
-    """Fit boundaries on outer TRAIN labels only; ties go to the lower bin."""
+    """Fit boundaries on supplied TRAIN indices only; ties go to the lower bin."""
     residue = np.asarray(residue, dtype=float)
     if not np.isfinite(residue).all():
         raise ValueError('Residue targets must all be finite; resolve missing metadata first.')
     if policy == 'csv':
-        return np.asarray(csv_labels, dtype=int).copy(), None
+        labels = np.asarray(csv_labels, dtype=int).copy()
+        if thresholds is None:
+            return labels, None
+        edges = np.asarray(thresholds, dtype=float)
+        if (
+            edges.shape != (2,) or not np.isfinite(edges).all()
+            or edges[0] >= edges[1]
+        ):
+            raise ValueError('Specify two finite, increasing CSV cutpoints.')
+        reconstructed = np.searchsorted(edges, residue, side='left')
+        if not np.array_equal(reconstructed, labels):
+            raise ValueError(
+                'Supplied cutpoints do not reproduce all CSV bins. '
+                'Use the original thresholds and check the tie convention.'
+            )
+        return labels, edges
     if policy == 'fixed':
         edges = np.asarray(thresholds if thresholds is not None else [], dtype=float)
     elif policy == 'train_quantile':
@@ -87,7 +102,10 @@ def make_inner_split(outer_train, labels, seed, groups=None, fraction=.2, group_
             raise ValueError('Too few outer-training groups for the configured inner folds.')
         splitter = StratifiedGroupKFold(group_folds,shuffle=True,random_state=seed)
         a,b = next(splitter.split(np.zeros(len(y)),y,g))
-        assert not set(g[a]) & set(g[b])
+        if not len(a) or not len(b):
+            raise ValueError('An inner partition is empty.')
+        if set(g[a]) & set(g[b]):
+            raise ValueError('Groups overlap between inner train and validation.')
     if len(np.unique(y[a])) != 3:
         raise ValueError('An inner training bin is empty; revise split/threshold design.')
     return outer_train[a],outer_train[b]
@@ -101,9 +119,14 @@ def classification_metrics(y, prediction, probabilities):
     if not np.allclose(p.sum(1),1,atol=1e-5):
         raise ValueError('Classification probabilities do not sum to one.')
     p = p / p.sum(1,keepdims=True)
+    target_cdf = (y[:, None] <= np.arange(2)[None, :]).astype(float)
+    rps = np.mean((p.cumsum(axis=1)[:, :-1] - target_cdf) ** 2)
     result = {'accuracy':float(np.mean(y==prediction)),
               'macro_f1':float(f1_score(y,prediction,labels=[0,1,2],average='macro',zero_division=0)),
               'log_loss':float(log_loss(y,p,labels=[0,1,2])),
+              'rps':float(rps),
+              'low_to_high_count':int(((y==0)&(prediction==2)).sum()),
+              'high_to_low_count':int(((y==2)&(prediction==0)).sum()),
               'brier':float(np.mean(np.sum((p-np.eye(3)[y])**2,axis=1))),
               'ordinal_mae':float(np.abs(y-prediction).mean()),
               'extreme_error_rate':float((np.abs(y-prediction)==2).mean())}

@@ -1,0 +1,8 @@
+inference,metric,estimate_mean_across_seeds,lower_95,upper_95,n_groups,n_seeds,bootstrap_replicates,fraction_draws_missing_class,method
+single,macro_f1,0.45871918993072575,0.40280821539756695,0.5049687924801575,21,3,1000,0.0,whole_group_percentile_conditional_on_fits
+single,recall_medium,0.3671497584541063,0.2777777777777778,0.44980421686746985,21,3,1000,0.0,whole_group_percentile_conditional_on_fits
+single,precision_medium,0.3254563175615807,0.21966660284068285,0.44446170503818666,21,3,1000,0.0,whole_group_percentile_conditional_on_fits
+single,ordinal_mae,0.6299840510366826,0.5602777777777778,0.6984164957849169,21,3,1000,0.0,whole_group_percentile_conditional_on_fits
+single,extreme_error_rate,0.0861244019138756,0.049206349206349205,0.12440191387559808,21,3,1000,0.0,whole_group_percentile_conditional_on_fits
+single,log_loss,1.4536398308658731,1.2226709634929775,1.6469674038361064,21,3,1000,0.0,whole_group_percentile_conditional_on_fits
+single,rps,0.2228409821847328,0.19491481076068942,0.2483465659806237,21,3,1000,0.0,whole_group_percentile_conditional_on_fits

@@ -1,0 +1,4 @@
+candidate,learning_rate,rps_weight,selected_epoch,selection_metric,selection_value,selected
+1,0.0001,1.0,1,macro_f1,0.35911773842808326,False
+2,0.001,1.0,5,macro_f1,0.3895948734658412,False
+3,0.01,1.0,16,macro_f1,0.44902998236331565,True
