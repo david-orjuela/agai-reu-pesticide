@@ -1,0 +1,17 @@
+September 23rd & 24th, 2026
+
+Missing:
+- Runs, bin or regression, with DINO
+- Regression with 3 seeds
+- Treatment-only run without leakage
+
+Must do:
+- Update script to save all outputs to a .log file
+"The labels were read from CSV, not calculated as training-fold quantiles by these runs. Every row of thresholds.csv says csv with missing lower and upper values; the quantile configuration is not evidence that quantiles were applied."
+How are bins computed then?
+
+To dos, esp w/ Dr. Chen's recommendations:
+- paired 2 stage pilot -- w/ vs w/out pretraining comparison under matched settings
+- Continuous image regression and image + treatment on saved splits
+- compare individual-leaf predictions with tree-level aggregation, since average several leaves is closer to the intended application
+- 
