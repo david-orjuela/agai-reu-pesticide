@@ -1,0 +1,8 @@
+inference,metric,estimate_mean_across_seeds,lower_95,upper_95,n_groups,n_seeds,bootstrap_replicates,fraction_draws_missing_class,method
+single,macro_f1,0.19047619047619047,0.1111111111111111,0.25,2,1,1000,0.0,whole_group_percentile_conditional_on_fits
+single,recall_medium,0.0,0.0,0.0,2,1,1000,0.0,whole_group_percentile_conditional_on_fits
+single,precision_medium,0.0,0.0,0.0,2,1,1000,0.0,whole_group_percentile_conditional_on_fits
+single,ordinal_mae,0.8,0.6,1.0,2,1,1000,0.0,whole_group_percentile_conditional_on_fits
+single,extreme_error_rate,0.2,0.2,0.2,2,1,1000,0.0,whole_group_percentile_conditional_on_fits
+single,log_loss,1.0872737276730606,1.0746280197970939,1.0999194355490272,2,1,1000,0.0,whole_group_percentile_conditional_on_fits
+single,rps,0.20735060755917853,0.17827890680585493,0.23642230831250216,2,1,1000,0.0,whole_group_percentile_conditional_on_fits

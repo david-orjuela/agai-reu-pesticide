@@ -1,0 +1,2 @@
+seed,fold,inference,n,accuracy,macro_f1,log_loss,rps,low_to_high_count,high_to_low_count,brier,ordinal_mae,extreme_error_rate,recall_low,recall_medium,recall_high,precision_low,precision_medium,precision_high,f1_low,f1_medium,f1_high,support_low,predicted_low,support_medium,predicted_medium,support_high,predicted_high,majority_baseline_accuracy
+42,1,single,20,0.4,0.24615384615384617,1.08221021636679,0.2069053074856984,0,0,0.6559142738508104,0.6,0.0,0.0,0.875,0.125,0.0,0.3888888888888889,0.5,0.0,0.5384615384615384,0.2,4,0,8,18,8,2,0.4

@@ -1,0 +1,4 @@
+run_name,seed,partition,n_images,percent_images,n_tree_groups,total_images
+bin_classification_custom_cnn_20260925T211331444479Z,42,train,170,81.33971291866028,17,209
+bin_classification_custom_cnn_20260925T211331444479Z,42,validation,19,9.090909090909092,2,209
+bin_classification_custom_cnn_20260925T211331444479Z,42,test,20,9.569377990430622,2,209

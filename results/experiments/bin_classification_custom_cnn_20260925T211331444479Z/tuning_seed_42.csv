@@ -1,0 +1,2 @@
+candidate,learning_rate,selected_epoch,selection_metric,selection_value
+1,0.0003,1,macro_f1,0.0909090909090909
