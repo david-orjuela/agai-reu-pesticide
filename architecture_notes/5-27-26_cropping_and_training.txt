@@ -1,4 +1,0 @@
-May 27th
-
-I changed my debugger file (overlaid red bboxes) to crop instead of overlay, works great especially paired with my notes on those that failed. All images are now cropped. Like I thought yesterday, I am going to have both the cropped AND masked images, but for now I will proceed into rigging the pipeline to feed these images and then think train/val/test splits, then train!
-I will then also think more into bins.

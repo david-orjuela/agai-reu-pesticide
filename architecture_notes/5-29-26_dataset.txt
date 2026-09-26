@@ -1,2 +1,0 @@
-May 29
-I understand how to create my own custom dataset on pytorch now. I had to convert CV2's BGR to PIL's RGB so as to be compatible with ResNet which expects RGB images.
