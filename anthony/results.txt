@@ -1,0 +1,315 @@
+uv run baseline_pipeline/train_baseline.py
+Device: cuda
+Total: 209 images | 209 sample_ids
+Train: 167 images | 167 sample_ids
+Validation: 21 images | 21 sample_ids
+Test: 21 images | 21 sample_ids
+
+Class distributions:
+Overall:
+  low: 70 sample_ids (33.5%) | 70 images
+  medium: 69 sample_ids (33.0%) | 69 images
+  high: 70 sample_ids (33.5%) | 70 images
+Train:
+  low: 56 sample_ids (33.5%) | 56 images
+  medium: 55 sample_ids (32.9%) | 55 images
+  high: 56 sample_ids (33.5%) | 56 images
+Validation:
+  low: 7 sample_ids (33.3%) | 7 images
+  medium: 7 sample_ids (33.3%) | 7 images
+  high: 7 sample_ids (33.3%) | 7 images
+Test:
+  low: 7 sample_ids (33.3%) | 7 images
+  medium: 7 sample_ids (33.3%) | 7 images
+  high: 7 sample_ids (33.3%) | 7 images
+
+Training class weights:
+  low: 0.9940
+  medium: 1.0121
+  high: 0.9940
+Epoch 01 | train loss 3.7439 | train acc 0.2754 | train F1 0.2756 | val loss 1.4779 | val acc 0.3333 | val F1 0.1667 | val UAR 0.3333                                                                                     
+Epoch 02 | train loss 1.3161 | train acc 0.3832 | train F1 0.3825 | val loss 1.2225 | val acc 0.3333 | val F1 0.1667 | val UAR 0.3333                                                                                     
+Epoch 03 | train loss 1.0075 | train acc 0.5329 | train F1 0.5159 | val loss 1.2663 | val acc 0.3333 | val F1 0.1667 | val UAR 0.3333                                                                                     
+Epoch 04 | train loss 0.9680 | train acc 0.5150 | train F1 0.5096 | val loss 1.0626 | val acc 0.4762 | val F1 0.4377 | val UAR 0.4762                                                                                     
+Epoch 05 | train loss 0.9451 | train acc 0.5569 | train F1 0.5508 | val loss 1.2049 | val acc 0.3810 | val F1 0.3004 | val UAR 0.3810                                                                                     
+Epoch 06 | train loss 0.8814 | train acc 0.5749 | train F1 0.5742 | val loss 1.2263 | val acc 0.3810 | val F1 0.3758 | val UAR 0.3810                                                                                     
+Epoch 07 | train loss 0.9656 | train acc 0.4970 | train F1 0.4964 | val loss 1.2627 | val acc 0.4762 | val F1 0.4697 | val UAR 0.4762                                                                                     
+Epoch 08 | train loss 0.9283 | train acc 0.5629 | train F1 0.5576 | val loss 1.1745 | val acc 0.3333 | val F1 0.3129 | val UAR 0.3333                                                                                     
+Epoch 09 | train loss 0.8615 | train acc 0.5449 | train F1 0.5440 | val loss 1.1579 | val acc 0.4762 | val F1 0.4667 | val UAR 0.4762                                                                                     
+Epoch 10 | train loss 0.8866 | train acc 0.5808 | train F1 0.5802 | val loss 1.2539 | val acc 0.3810 | val F1 0.3460 | val UAR 0.3810                                                                                     
+Epoch 11 | train loss 0.7323 | train acc 0.6467 | train F1 0.6475 | val loss 1.3777 | val acc 0.2857 | val F1 0.2620 | val UAR 0.2857                                                                                     
+Epoch 12 | train loss 0.6837 | train acc 0.6826 | train F1 0.6807 | val loss 1.3063 | val acc 0.4286 | val F1 0.4027 | val UAR 0.4286                                                                                     
+Epoch 13 | train loss 0.6912 | train acc 0.6766 | train F1 0.6763 | val loss 1.6259 | val acc 0.4286 | val F1 0.4000 | val UAR 0.4286                                                                                     
+Epoch 14 | train loss 0.7549 | train acc 0.6347 | train F1 0.6351 | val loss 1.2725 | val acc 0.4762 | val F1 0.4377 | val UAR 0.4762                                                                                     
+Epoch 15 | train loss 0.6967 | train acc 0.6347 | train F1 0.6293 | val loss 1.2446 | val acc 0.4762 | val F1 0.4450 | val UAR 0.4762                                                                                     
+Early stopping after epoch 15.
+                                                                                                                                                                                                                          
+Best checkpoint: epoch 7 | validation macro-F1 0.4697
+Test results
+  Accuracy: 0.4286 (42.86%)
+  Macro-F1: 0.4184
+  UAR: 0.4286
+
+Results saved to: /home/davidorjuela/dev/agai-reu-pesticide/anthony/cnn_results
+
+
+
+
+
+uv run baseline_pipeline/train_baseline_improved.py
+Device: cuda
+Total: 209 images | 209 sample_ids
+Train: 167 images | 167 sample_ids
+Validation: 21 images | 21 sample_ids
+Test: 21 images | 21 sample_ids
+
+Class distributions:
+Overall:
+  low: 70 sample_ids (33.5%) | 70 images
+  medium: 69 sample_ids (33.0%) | 69 images
+  high: 70 sample_ids (33.5%) | 70 images
+Train:
+  low: 56 sample_ids (33.5%) | 56 images
+  medium: 55 sample_ids (32.9%) | 55 images
+  high: 56 sample_ids (33.5%) | 56 images
+Validation:
+  low: 7 sample_ids (33.3%) | 7 images
+  medium: 7 sample_ids (33.3%) | 7 images
+  high: 7 sample_ids (33.3%) | 7 images
+Test:
+  low: 7 sample_ids (33.3%) | 7 images
+  medium: 7 sample_ids (33.3%) | 7 images
+  high: 7 sample_ids (33.3%) | 7 images
+
+Training class weights:
+  low: 0.9940
+  medium: 1.0121
+  high: 0.9940
+Epoch 01 | train loss 1.1507 | train acc 0.2874 | train F1 0.2579 | val loss 1.1846 | val acc 0.3333 | val F1 0.1667 | val UAR 0.3333                                                                                     
+Epoch 02 | train loss 1.0627 | train acc 0.4431 | train F1 0.4420 | val loss 1.2452 | val acc 0.3333 | val F1 0.1728 | val UAR 0.3333                                                                                     
+Epoch 03 | train loss 0.9980 | train acc 0.4850 | train F1 0.4799 | val loss 1.3129 | val acc 0.3333 | val F1 0.1728 | val UAR 0.3333                                                                                     
+Epoch 04 | train loss 1.0523 | train acc 0.4371 | train F1 0.4251 | val loss 1.1346 | val acc 0.3810 | val F1 0.3016 | val UAR 0.3810                                                                                     
+Epoch 05 | train loss 0.9933 | train acc 0.5329 | train F1 0.5240 | val loss 1.1349 | val acc 0.3810 | val F1 0.3235 | val UAR 0.3810                                                                                     
+Epoch 06 | train loss 0.9906 | train acc 0.5090 | train F1 0.4921 | val loss 1.1417 | val acc 0.2381 | val F1 0.2372 | val UAR 0.2381                                                                                     
+Epoch 07 | train loss 0.9839 | train acc 0.5449 | train F1 0.5367 | val loss 1.1499 | val acc 0.3810 | val F1 0.3768 | val UAR 0.3810                                                                                     
+Epoch 08 | train loss 0.9770 | train acc 0.5389 | train F1 0.5332 | val loss 1.2602 | val acc 0.3810 | val F1 0.3111 | val UAR 0.3810                                                                                     
+Epoch 09 | train loss 0.9450 | train acc 0.5509 | train F1 0.5478 | val loss 1.1788 | val acc 0.4762 | val F1 0.4667 | val UAR 0.4762                                                                                     
+Epoch 10 | train loss 0.9283 | train acc 0.5868 | train F1 0.5783 | val loss 1.1224 | val acc 0.4286 | val F1 0.4222 | val UAR 0.4286                                                                                     
+Epoch 11 | train loss 0.9281 | train acc 0.5689 | train F1 0.5560 | val loss 1.2187 | val acc 0.4762 | val F1 0.4439 | val UAR 0.4762                                                                                     
+Epoch 12 | train loss 0.9188 | train acc 0.5569 | train F1 0.5448 | val loss 1.2556 | val acc 0.4286 | val F1 0.3906 | val UAR 0.4286                                                                                     
+Epoch 13 | train loss 0.9239 | train acc 0.5449 | train F1 0.5415 | val loss 1.1408 | val acc 0.5238 | val F1 0.5166 | val UAR 0.5238                                                                                     
+Epoch 14 | train loss 0.9270 | train acc 0.5389 | train F1 0.5365 | val loss 1.1715 | val acc 0.3810 | val F1 0.3783 | val UAR 0.3810                                                                                     
+Epoch 15 | train loss 0.8923 | train acc 0.5928 | train F1 0.5831 | val loss 1.1801 | val acc 0.4762 | val F1 0.4275 | val UAR 0.4762                                                                                     
+Epoch 16 | train loss 0.8885 | train acc 0.6108 | train F1 0.6073 | val loss 1.2354 | val acc 0.4762 | val F1 0.4121 | val UAR 0.4762                                                                                     
+Epoch 17 | train loss 0.8976 | train acc 0.5749 | train F1 0.5725 | val loss 1.1379 | val acc 0.4286 | val F1 0.4286 | val UAR 0.4286                                                                                     
+Epoch 18 | train loss 0.8942 | train acc 0.5808 | train F1 0.5814 | val loss 1.1398 | val acc 0.4762 | val F1 0.4667 | val UAR 0.4762                                                                                     
+Epoch 19 | train loss 0.8430 | train acc 0.5988 | train F1 0.5962 | val loss 1.5497 | val acc 0.3810 | val F1 0.3523 | val UAR 0.3810                                                                                     
+Epoch 20 | train loss 0.8754 | train acc 0.6407 | train F1 0.6382 | val loss 1.1493 | val acc 0.3810 | val F1 0.3826 | val UAR 0.3810                                                                                     
+Epoch 21 | train loss 0.8563 | train acc 0.6467 | train F1 0.6434 | val loss 1.3130 | val acc 0.3810 | val F1 0.3386 | val UAR 0.3810                                                                                     
+Early stopping after epoch 21.
+                                                                                                                                                                                                                          
+Best checkpoint: epoch 13 | validation macro-F1 0.5166
+Test results
+  Accuracy: 0.5238 (52.38%)
+  Macro-F1: 0.5189
+  UAR: 0.5238
+
+Results saved to: /home/davidorjuela/dev/agai-reu-pesticide/anthony/cnn_results_v2
+
+
+uv run baseline_pipeline/train_baseline_improved2.py
+Downloading PlantNet ResNet-18 weights to:
+  /home/davidorjuela/dev/agai-reu-pesticide/anthony/pretrained/plantnet_resnet18.pth
+Device: cuda
+Backbone: PlantNet-300K pretrained ResNet-18
+Input: resize 256 -> crop 224
+Total: 209 images | 209 sample_ids
+Train: 167 images | 167 sample_ids
+Validation: 21 images | 21 sample_ids
+Test: 21 images | 21 sample_ids
+
+Class distributions:
+Overall:
+  low: 70 sample_ids (33.5%) | 70 images
+  medium: 69 sample_ids (33.0%) | 69 images
+  high: 70 sample_ids (33.5%) | 70 images
+Train:
+  low: 56 sample_ids (33.5%) | 56 images
+  medium: 55 sample_ids (32.9%) | 55 images
+  high: 56 sample_ids (33.5%) | 56 images
+Validation:
+  low: 7 sample_ids (33.3%) | 7 images
+  medium: 7 sample_ids (33.3%) | 7 images
+  high: 7 sample_ids (33.3%) | 7 images
+Test:
+  low: 7 sample_ids (33.3%) | 7 images
+  medium: 7 sample_ids (33.3%) | 7 images
+  high: 7 sample_ids (33.3%) | 7 images
+
+Training class weights:
+  low: 0.9940
+  medium: 1.0121
+  high: 0.9940
+
+Stage 1: train classification head
+head | Epoch 01/10 | train loss 1.0986 | train acc 0.3234 | train F1 0.2898 | val loss 1.0836 | val acc 0.4762 | val F1 0.4405 | val UAR 0.4762                                                                           
+head | Epoch 02/10 | train loss 1.0794 | train acc 0.4311 | train F1 0.3945 | val loss 1.0739 | val acc 0.4762 | val F1 0.4405 | val UAR 0.4762                                                                           
+head | Epoch 03/10 | train loss 1.0599 | train acc 0.4671 | train F1 0.4521 | val loss 1.0641 | val acc 0.5238 | val F1 0.5111 | val UAR 0.5238                                                                           
+head | Epoch 04/10 | train loss 1.0537 | train acc 0.5329 | train F1 0.5272 | val loss 1.0556 | val acc 0.4762 | val F1 0.4683 | val UAR 0.4762                                                                           
+head | Epoch 05/10 | train loss 1.0434 | train acc 0.5150 | train F1 0.5009 | val loss 1.0536 | val acc 0.4762 | val F1 0.4683 | val UAR 0.4762                                                                           
+head | Epoch 06/10 | train loss 1.0322 | train acc 0.5509 | train F1 0.5382 | val loss 1.0482 | val acc 0.4762 | val F1 0.4686 | val UAR 0.4762                                                                           
+head | Epoch 07/10 | train loss 1.0203 | train acc 0.5389 | train F1 0.5197 | val loss 1.0406 | val acc 0.5238 | val F1 0.5115 | val UAR 0.5238                                                                           
+head | Epoch 08/10 | train loss 1.0077 | train acc 0.5868 | train F1 0.5759 | val loss 1.0319 | val acc 0.4762 | val F1 0.4731 | val UAR 0.4762                                                                           
+head | Epoch 09/10 | train loss 1.0113 | train acc 0.5389 | train F1 0.5367 | val loss 1.0264 | val acc 0.4762 | val F1 0.4744 | val UAR 0.4762                                                                           
+head | Epoch 10/10 | train loss 0.9915 | train acc 0.5329 | train F1 0.5330 | val loss 1.0255 | val acc 0.4762 | val F1 0.4731 | val UAR 0.4762                                                                           
+
+Stage 2: fine-tune full PlantNet backbone
+full | Epoch 01/40 | train loss 1.0513 | train acc 0.4611 | train F1 0.4507 | val loss 1.1491 | val acc 0.4286 | val F1 0.3200 | val UAR 0.4286                                                                           
+full | Epoch 02/40 | train loss 1.0327 | train acc 0.4431 | train F1 0.4409 | val loss 1.1972 | val acc 0.3810 | val F1 0.2951 | val UAR 0.3810                                                                           
+full | Epoch 03/40 | train loss 1.0241 | train acc 0.4970 | train F1 0.4948 | val loss 1.1830 | val acc 0.2857 | val F1 0.2121 | val UAR 0.2857                                                                           
+full | Epoch 04/40 | train loss 1.0257 | train acc 0.4611 | train F1 0.4596 | val loss 1.1759 | val acc 0.3810 | val F1 0.3446 | val UAR 0.3810                                                                           
+full | Epoch 05/40 | train loss 1.0232 | train acc 0.5449 | train F1 0.5423 | val loss 1.1649 | val acc 0.3333 | val F1 0.2541 | val UAR 0.3333                                                                           
+full | Epoch 06/40 | train loss 1.0236 | train acc 0.4850 | train F1 0.4834 | val loss 1.1718 | val acc 0.3333 | val F1 0.2500 | val UAR 0.3333                                                                           
+full | Epoch 07/40 | train loss 1.0011 | train acc 0.5269 | train F1 0.5208 | val loss 1.1528 | val acc 0.3810 | val F1 0.3439 | val UAR 0.3810                                                                           
+full | Epoch 08/40 | train loss 0.9845 | train acc 0.5210 | train F1 0.5169 | val loss 1.1450 | val acc 0.3333 | val F1 0.2862 | val UAR 0.3333                                                                           
+full: early stopping after epoch 8.
+                                                                                                                                                                                                                          
+Best checkpoint: stage head | epoch 7 | validation macro-F1 0.5115
+Test results
+  Accuracy: 0.5714 (57.14%)
+  Macro-F1: 0.5721
+  UAR: 0.5714
+
+Results saved to: /home/davidorjuela/dev/agai-reu-pesticide/anthony/plantnet_resnet18_results
+
+
+uv run baseline_pipeline/train_baseline_improved3.py
+Device: cuda
+Backbone: PlantNet-300K pretrained ResNet-18
+Input: global 448 + global 224 + 9 overlapping 224 tiles
+Total: 209 images | 209 sample_ids
+Train: 167 images | 167 sample_ids
+Validation: 21 images | 21 sample_ids
+Test: 21 images | 21 sample_ids
+
+Class distributions:
+Overall:
+  low: 70 sample_ids (33.5%) | 70 images
+  medium: 69 sample_ids (33.0%) | 69 images
+  high: 70 sample_ids (33.5%) | 70 images
+Train:
+  low: 56 sample_ids (33.5%) | 56 images
+  medium: 55 sample_ids (32.9%) | 55 images
+  high: 56 sample_ids (33.5%) | 56 images
+Validation:
+  low: 7 sample_ids (33.3%) | 7 images
+  medium: 7 sample_ids (33.3%) | 7 images
+  high: 7 sample_ids (33.3%) | 7 images
+Test:
+  low: 7 sample_ids (33.3%) | 7 images
+  medium: 7 sample_ids (33.3%) | 7 images
+  high: 7 sample_ids (33.3%) | 7 images
+
+Training class weights:
+  low: 0.9940
+  medium: 1.0121
+  high: 0.9940
+
+Stage 1: train classification head
+head | Epoch 01/10 | train loss 1.1058 | train acc 0.2754 | train F1 0.2435 | val loss 1.0954 | val acc 0.3810 | val F1 0.3519 | val UAR 0.3810                                                                           
+head | Epoch 02/10 | train loss 1.0824 | train acc 0.4251 | train F1 0.4190 | val loss 1.0899 | val acc 0.5238 | val F1 0.5424 | val UAR 0.5238                                                                           
+head | Epoch 03/10 | train loss 1.0715 | train acc 0.4850 | train F1 0.4756 | val loss 1.0895 | val acc 0.4286 | val F1 0.4353 | val UAR 0.4286                                                                           
+head | Epoch 04/10 | train loss 1.0559 | train acc 0.4611 | train F1 0.4250 | val loss 1.0886 | val acc 0.3810 | val F1 0.3758 | val UAR 0.3810                                                                           
+head | Epoch 05/10 | train loss 1.0516 | train acc 0.4970 | train F1 0.4939 | val loss 1.0912 | val acc 0.3810 | val F1 0.3758 | val UAR 0.3810                                                                           
+head | Epoch 06/10 | train loss 1.0424 | train acc 0.5449 | train F1 0.5448 | val loss 1.0826 | val acc 0.3810 | val F1 0.3862 | val UAR 0.3810                                                                           
+head | Epoch 07/10 | train loss 1.0295 | train acc 0.5329 | train F1 0.5272 | val loss 1.0737 | val acc 0.3810 | val F1 0.3814 | val UAR 0.3810                                                                           
+head | Epoch 08/10 | train loss 1.0182 | train acc 0.5389 | train F1 0.5361 | val loss 1.0703 | val acc 0.3333 | val F1 0.3399 | val UAR 0.3333                                                                           
+head | Epoch 09/10 | train loss 1.0164 | train acc 0.5090 | train F1 0.5046 | val loss 1.0692 | val acc 0.3810 | val F1 0.3814 | val UAR 0.3810                                                                           
+head | Epoch 10/10 | train loss 1.0104 | train acc 0.5090 | train F1 0.4973 | val loss 1.0711 | val acc 0.4286 | val F1 0.4001 | val UAR 0.4286                                                                           
+head: early stopping after epoch 10.
+
+Stage 2: fine-tune full PlantNet backbone
+full | Epoch 01/40 | train loss 1.0756 | train acc 0.4371 | train F1 0.3959 | val loss 1.0901 | val acc 0.3810 | val F1 0.3823 | val UAR 0.3810                                                                           
+full | Epoch 02/40 | train loss 1.0593 | train acc 0.4371 | train F1 0.4257 | val loss 1.0837 | val acc 0.4286 | val F1 0.4090 | val UAR 0.4286                                                                           
+full | Epoch 03/40 | train loss 1.0629 | train acc 0.4790 | train F1 0.4768 | val loss 1.0800 | val acc 0.3333 | val F1 0.3425 | val UAR 0.3333                                                                           
+full | Epoch 04/40 | train loss 1.0469 | train acc 0.5449 | train F1 0.5451 | val loss 1.0783 | val acc 0.3810 | val F1 0.3856 | val UAR 0.3810                                                                           
+full | Epoch 05/40 | train loss 1.0354 | train acc 0.5449 | train F1 0.5437 | val loss 1.0769 | val acc 0.4286 | val F1 0.4074 | val UAR 0.4286                                                                           
+full | Epoch 06/40 | train loss 1.0274 | train acc 0.5629 | train F1 0.5569 | val loss 1.0713 | val acc 0.4762 | val F1 0.4657 | val UAR 0.4762                                                                           
+full | Epoch 07/40 | train loss 0.9979 | train acc 0.5868 | train F1 0.5811 | val loss 1.0658 | val acc 0.4286 | val F1 0.4232 | val UAR 0.4286                                                                           
+full | Epoch 08/40 | train loss 0.9955 | train acc 0.5689 | train F1 0.5685 | val loss 1.0559 | val acc 0.5238 | val F1 0.5115 | val UAR 0.5238                                                                           
+full: early stopping after epoch 8.
+                                                                                                                                                                                                                          
+Best checkpoint: stage head | epoch 2 | validation macro-F1 0.5424
+Test results
+  Accuracy: 0.5714 (57.14%)
+  Macro-F1: 0.5500
+  UAR: 0.5714
+
+Results saved to: /home/davidorjuela/dev/agai-reu-pesticide/anthony/plantnet_resnet18_multiscale_tiles_results
+
+
+
+
+uv run baseline_pipeline/train_baseline_improved3_ablation.py
+Device: cuda
+Backbone: PlantNet-300K pretrained ResNet-18
+Input: global 448 + global 224 + 9 overlapping 224 tiles
+Total: 209 images | 209 sample_ids
+Train: 167 images | 167 sample_ids
+Validation: 21 images | 21 sample_ids
+Test: 21 images | 21 sample_ids
+
+Class distributions:
+Overall:
+  low: 70 sample_ids (33.5%) | 70 images
+  medium: 69 sample_ids (33.0%) | 69 images
+  high: 70 sample_ids (33.5%) | 70 images
+Train:
+  low: 56 sample_ids (33.5%) | 56 images
+  medium: 55 sample_ids (32.9%) | 55 images
+  high: 56 sample_ids (33.5%) | 56 images
+Validation:
+  low: 7 sample_ids (33.3%) | 7 images
+  medium: 7 sample_ids (33.3%) | 7 images
+  high: 7 sample_ids (33.3%) | 7 images
+Test:
+  low: 7 sample_ids (33.3%) | 7 images
+  medium: 7 sample_ids (33.3%) | 7 images
+  high: 7 sample_ids (33.3%) | 7 images
+
+Training class weights:
+  low: 0.9940
+  medium: 1.0121
+  high: 0.9940
+
+Stage 1: train classification head
+head | Epoch 01/10 | train loss 1.1058 | train acc 0.2754 | train F1 0.2435 | val loss 1.0954 | val acc 0.3810 | val F1 0.3519 | val UAR 0.3810                                                                           
+head | Epoch 02/10 | train loss 1.0824 | train acc 0.4251 | train F1 0.4190 | val loss 1.0899 | val acc 0.5238 | val F1 0.5424 | val UAR 0.5238                                                                           
+head | Epoch 03/10 | train loss 1.0715 | train acc 0.4850 | train F1 0.4756 | val loss 1.0895 | val acc 0.4286 | val F1 0.4353 | val UAR 0.4286                                                                           
+head | Epoch 04/10 | train loss 1.0559 | train acc 0.4611 | train F1 0.4250 | val loss 1.0886 | val acc 0.3810 | val F1 0.3758 | val UAR 0.3810                                                                           
+head | Epoch 05/10 | train loss 1.0516 | train acc 0.4970 | train F1 0.4939 | val loss 1.0912 | val acc 0.3810 | val F1 0.3758 | val UAR 0.3810                                                                           
+head | Epoch 06/10 | train loss 1.0424 | train acc 0.5449 | train F1 0.5448 | val loss 1.0826 | val acc 0.3810 | val F1 0.3862 | val UAR 0.3810                                                                           
+head | Epoch 07/10 | train loss 1.0295 | train acc 0.5329 | train F1 0.5272 | val loss 1.0737 | val acc 0.3810 | val F1 0.3814 | val UAR 0.3810                                                                           
+head | Epoch 08/10 | train loss 1.0182 | train acc 0.5389 | train F1 0.5361 | val loss 1.0703 | val acc 0.3333 | val F1 0.3399 | val UAR 0.3333                                                                           
+head | Epoch 09/10 | train loss 1.0164 | train acc 0.5090 | train F1 0.5046 | val loss 1.0692 | val acc 0.3810 | val F1 0.3814 | val UAR 0.3810                                                                           
+head | Epoch 10/10 | train loss 1.0104 | train acc 0.5090 | train F1 0.4973 | val loss 1.0711 | val acc 0.4286 | val F1 0.4001 | val UAR 0.4286                                                                           
+head: early stopping after epoch 10.
+
+Stage 2: fine-tune full PlantNet backbone
+full | Epoch 01/40 | train loss 1.0756 | train acc 0.4371 | train F1 0.3959 | val loss 1.0901 | val acc 0.3810 | val F1 0.3823 | val UAR 0.3810                                                                           
+full | Epoch 02/40 | train loss 1.0593 | train acc 0.4371 | train F1 0.4257 | val loss 1.0837 | val acc 0.4286 | val F1 0.4090 | val UAR 0.4286                                                                           
+full | Epoch 03/40 | train loss 1.0629 | train acc 0.4790 | train F1 0.4768 | val loss 1.0800 | val acc 0.3333 | val F1 0.3425 | val UAR 0.3333                                                                           
+full | Epoch 04/40 | train loss 1.0469 | train acc 0.5449 | train F1 0.5451 | val loss 1.0783 | val acc 0.3810 | val F1 0.3856 | val UAR 0.3810                                                                           
+full | Epoch 05/40 | train loss 1.0354 | train acc 0.5449 | train F1 0.5437 | val loss 1.0769 | val acc 0.4286 | val F1 0.4074 | val UAR 0.4286                                                                           
+full | Epoch 06/40 | train loss 1.0274 | train acc 0.5629 | train F1 0.5569 | val loss 1.0713 | val acc 0.4762 | val F1 0.4657 | val UAR 0.4762                                                                           
+full | Epoch 07/40 | train loss 0.9979 | train acc 0.5868 | train F1 0.5811 | val loss 1.0658 | val acc 0.4286 | val F1 0.4232 | val UAR 0.4286                                                                           
+full | Epoch 08/40 | train loss 0.9955 | train acc 0.5689 | train F1 0.5685 | val loss 1.0559 | val acc 0.5238 | val F1 0.5115 | val UAR 0.5238                                                                           
+full: early stopping after epoch 8.
+                                                                                                                                                                                                                          
+Best checkpoint: stage head | epoch 2 | validation macro-F1 0.5424
+Test results
+  Accuracy: 0.5714 (57.14%)
+  Macro-F1: 0.5500
+  UAR: 0.5714
+
+Results saved to: /home/davidorjuela/dev/agai-reu-pesticide/anthony/plantnet_resnet18_multiscale_tiles_results_ablation
