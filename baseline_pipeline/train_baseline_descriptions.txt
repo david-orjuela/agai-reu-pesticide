@@ -1,0 +1,106 @@
+LEAF RESIDUE CLASSIFICATION — EXPERIMENT APPROACHES
+==================================================
+
+Shared protocol
+---------------
+All four supplied training scripts classify residue_bin as low, medium, or high. They split whole sample_id groups into stratified 80% train / 10% validation / 10% test partitions, use seed 42, inverse-frequency class-weighted cross-entropy, AdamW, and select the checkpoint with the highest validation macro-F1. The held-out test split is then used for accuracy, macro-F1, UAR, per-class metrics, predictions, and confusion matrices.
+
+1. Scratch CNN with Flattened Spatial Classifier
+-------------------------------------------------
+Input: RGB 128x128.
+
+Architecture:
+- Conv 3->32, 3x3, padding 1 + BatchNorm + ReLU + 2x2 max pool.
+- Conv 32->64, 3x3, padding 1 + BatchNorm + ReLU + 2x2 max pool.
+- Conv 64->128, 3x3, padding 1 + BatchNorm + ReLU + 2x2 max pool.
+- Conv 128->128, 3x3, padding 1 + BatchNorm + ReLU.
+- Flatten 128x16x16 = 32,768 features.
+- Linear 32,768->128 + ReLU + Dropout(0.3).
+- Linear 128->3 class logits.
+
+Training:
+- Resize directly to 128x128.
+- Random horizontal flip during training.
+- AdamW, learning rate 1e-3, weight decay 1e-4.
+- Up to 50 epochs, patience 8.
+
+Purpose:
+This is the original scratch baseline. It preserves all final spatial feature locations by flattening them, but this creates a relatively large classifier head and many trainable parameters after the convolutional trunk.
+
+2. Scratch CNN with Global Average Pooling
+------------------------------------------
+Input: RGB 128x128.
+
+Architecture:
+- Same four convolutional blocks as the original scratch CNN.
+- Adaptive global average pooling converts the final 128 feature maps to 128 scalar features.
+- Dropout(0.2).
+- Linear 128->3 class logits.
+
+Training changes:
+- Random horizontal flip.
+- Random vertical flip.
+- Random rotation up to 15 degrees.
+- Same optimizer, loss, split, early stopping, and selection rule as the original scratch baseline.
+
+Purpose:
+This replaces the large flattened spatial classifier with a compact global-average-pooled head. It therefore reduces the classifier parameter count and makes classification depend on channel-wise global evidence rather than exact final feature-map locations. This experiment also strengthens augmentation, so it is a complete improved baseline rather than a single-variable ablation.
+
+3. PlantNet-300K ResNet-18 Transfer Learning
+--------------------------------------------
+Input: RGB image; resize to 256, then use a 224x224 crop.
+
+Architecture:
+- Standard ResNet-18 backbone pretrained on PlantNet-300K's 1081 plant-species classification task.
+- The original 1081-class fully connected layer is replaced with a Linear 512->3 classifier.
+
+Preprocessing:
+- Training: resize to 256, random 224x224 crop, horizontal flip, vertical flip, random rotation up to 15 degrees.
+- Validation/test: resize to 256, center 224x224 crop.
+- ImageNet mean/std normalization.
+
+Fine-tuning schedule:
+- Stage 1: freeze the backbone and train only the new classification head for up to 10 epochs at learning rate 1e-3.
+- Reload the best checkpoint.
+- Stage 2: unfreeze the full network and fine-tune for up to 40 epochs at learning rate 1e-4.
+- Weight decay 1e-4; patience 8; checkpoint selection uses validation macro-F1 across both stages.
+
+Purpose:
+This replaces scratch feature learning with domain-relevant plant pretraining while retaining a conventional single global image view.
+
+4. PlantNet ResNet-18 with Multi-Scale Global Views and Local Tiles
+------------------------------------------------------------------
+Input: one leaf image represented by 11 views.
+
+Views:
+- One full-image 448x448 view created with aspect-preserving resize-and-pad.
+- One full-image 224x224 view created with aspect-preserving resize-and-pad.
+- Nine overlapping local tiles arranged on a 3x3 grid. Each tile spans approximately half the original image width and height and is resized/padded to 224x224.
+
+Architecture:
+- The same PlantNet-300K pretrained ResNet-18 is shared across all 11 views.
+- Each view independently produces 3 class logits.
+- The 9 tile logits are averaged to form one local-detail logit vector.
+- Final logits = mean(448-global logits, 224-global logits, averaged-local logits).
+
+Training:
+- Same two-stage head-only then full-backbone fine-tuning schedule as the single-view PlantNet model.
+- Detail-safe training augmentation uses horizontal flips, vertical flips, and 90/180/270-degree rotations rather than arbitrary-angle interpolation.
+- Global and tile views preserve aspect ratio by padding rather than cropping away image content.
+
+Purpose:
+This approach explicitly combines whole-leaf context with high-resolution local residue detail while sharing a single pretrained backbone across all views.
+
+Reporting produced by rerun_baseline_progression.py
+---------------------------------------------------
+- An isolated result directory for each experiment, preventing output overwrites.
+- A CSV with all validation/test metrics across the four approaches.
+- One overall technical model-performance comparison figure.
+- One simple chronological validation macro-F1 progression figure.
+- One learning-curve/performance figure per experiment.
+- One technically explicit architecture figure per experiment.
+- A generated approaches.txt containing the same descriptions plus the rerun metrics.
+- Automatic selection of the best model by validation macro-F1.
+- Full validation predictions for the selected model, including true label, predicted label, probabilities, and correctness.
+- A validation example figure showing representative correct and incorrect predictions with the true and predicted labels.
+- Paginated contact sheets covering every validation image for the best model, each marked CORRECT or INCORRECT with true and predicted labels.
