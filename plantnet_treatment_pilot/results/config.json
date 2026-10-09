@@ -1,0 +1,57 @@
+{
+  "pretrain": "both",
+  "icp_csv": "/home/davidorjuela/dev/agai-reu-pesticide/anthony/master_icp.csv",
+  "treatment_csv": "/home/davidorjuela/dev/agai-reu-pesticide/datasets/kocide_application_2025/nominal_treatment.csv",
+  "plantnet_weights": "/home/davidorjuela/dev/agai-reu-pesticide/anthony/pretrained/plantnet_resnet18.pth",
+  "seed": 42,
+  "icp_head_seed": 43,
+  "split_unit": "image",
+  "split_fractions": [
+    0.8,
+    0.1,
+    0.1
+  ],
+  "tree_separated": false,
+  "icp_classes": [
+    "low",
+    "medium",
+    "high"
+  ],
+  "treatment_classes": [
+    "400",
+    "600",
+    "800",
+    "1000"
+  ],
+  "treatment_epochs": 5,
+  "treatment_learning_rate": 0.0001,
+  "head_epochs": 10,
+  "fine_tune_epochs": 40,
+  "head_learning_rate": 0.001,
+  "fine_tune_learning_rate": 0.0001,
+  "weight_decay": 0.0001,
+  "patience_per_phase": 8,
+  "batch_size": 8,
+  "num_workers": 4,
+  "image_sizes": [
+    448,
+    224,
+    224
+  ],
+  "normalization_mean": [
+    0.485,
+    0.456,
+    0.406
+  ],
+  "normalization_std": [
+    0.229,
+    0.224,
+    0.225
+  ],
+  "augmentation": "random flips and right-angle rotation",
+  "loss": "training-split inverse-frequency weighted cross-entropy",
+  "optimizer": "AdamW; fresh per task and phase",
+  "checkpoint_rule": "strictly higher validation macro-F1; ties keep earlier checkpoint",
+  "success_criterion": "ICP test performance B versus A on the shared split",
+  "historical_accuracy_target": 0.61
+}
