@@ -1,0 +1,54 @@
+{
+  "checkpoint": "/home/davidorjuela/dev/agai-reu-pesticide/plantnet_treatment_pilot/results_tree_split_20epochs/B_treatment_pretrained/icp/best_icp.pt",
+  "checkpoint_sha256": "f0ba067f129b098ae89b20d9a2138fd2a4ac72adb186d676c03ed934e37eb274",
+  "training_script": "/home/davidorjuela/dev/agai-reu-pesticide/plantnet_treatment_pilot/train_unlabeled.py",
+  "script_sha256": "da4c7302b5b3325840fe1b50a402ad44c0a435e04c1e3fe4afada686629fc4a1",
+  "checkpoint_stage": "icp_full",
+  "checkpoint_epoch": 14,
+  "classes": [
+    "low",
+    "medium",
+    "high"
+  ],
+  "device": "cuda",
+  "torch_version": "2.13.0+cu130",
+  "selected_splits": [
+    "validation"
+  ],
+  "tree_overlap_groups": 0,
+  "unknown_tree_rows": 0,
+  "unreadable_images": 0,
+  "cross_split_duplicate_groups": 0,
+  "normalization_mean": [
+    0.485,
+    0.456,
+    0.406
+  ],
+  "normalization_std": [
+    0.229,
+    0.224,
+    0.225
+  ],
+  "configured_sizes": [
+    448,
+    224,
+    224
+  ],
+  "results": {
+    "validation": {
+      "n": 20,
+      "accuracy": 0.75,
+      "macro_f1": 0.7297619047619048,
+      "recall_low": 1.0,
+      "recall_medium": 0.8333333333333334,
+      "recall_high": 0.42857142857142855,
+      "support_low": 7,
+      "support_medium": 6,
+      "support_high": 7,
+      "expected_images": 20,
+      "failed_images": 0,
+      "complete": true,
+      "saved_prediction_comparison": null
+    }
+  }
+}

@@ -1,0 +1,14 @@
+{
+  "n": 20,
+  "accuracy": 0.75,
+  "macro_f1": 0.7297619047619048,
+  "recall_low": 1.0,
+  "recall_medium": 0.8333333333333334,
+  "recall_high": 0.42857142857142855,
+  "support_low": 7,
+  "support_medium": 6,
+  "support_high": 7,
+  "expected_images": 20,
+  "failed_images": 0,
+  "complete": true
+}

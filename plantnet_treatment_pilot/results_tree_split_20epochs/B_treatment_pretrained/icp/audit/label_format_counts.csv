@@ -1,0 +1,10 @@
+split,label,extension,images
+test,high,.jpg,7
+test,low,.jpg,7
+test,medium,.jpg,6
+train,high,.jpg,56
+train,low,.jpg,56
+train,medium,.jpg,57
+validation,high,.jpg,7
+validation,low,.jpg,7
+validation,medium,.jpg,6
