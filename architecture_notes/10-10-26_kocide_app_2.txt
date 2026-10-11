@@ -1,0 +1,339 @@
+October 10th, 2026
+
+With a plantnet pretrained resnet, we ran anthony's new baseline training script and achieved 61% accuracy.
+
+This new architecture presented the opportunity to use the treatment-labled images more effectively. One of the biggest improvements was thanks to PlantNet, and 448/224 global scales + 9 overlapping 224^2 tiles.
+
+In a 2-stage process, see if taking this PlantNet-pretrained Resnet18 can be finetuned to predict the treatment on these hundreds of images.
+Then, finetune it further on the 209 ICP'd images to see how performance improves -- if at all -- versus the original 61% PlantNet ICP baseline.
+
+Results of this:
+| Final ICP test metric | Without treatment pretraining | With treatment pretraining |
+|---					|---:							|---:|
+| Accuracy 				| 52.4% — 11/21 				| **57.1% — 12/21** |
+| Macro-F1 				| 0.429 						| **0.556** |
+| Medium-class recall 	| 0/7 							| **2/7** |
+| Low-class recall 		| 6/7 							| 5/7 |
+| High-class recall 	| 5/7							| 5/7 |
+
+Immediate to Dos:
+- Visualize model inputs and tiles to see if cropping is necessary.
+
+
+Later To Dos:
+- Incorporate the 2026 Kocide application dataset (not just 2025).
+- Combine the original 36 ICP images to the current 209 (200 + 10 control - 1 control omitted) and create new comparisons
+- Potentially crop treatment-labeled images and compare (can be done automatically -- does not need to be perfect)
+
+
+
+2026 Kocide Application Dataset:
+400 ppm - ~319 images
+600 ppm - ~345 images
+
+2025 Kocide Application Dataset:
+400 ppm - 117 images
+600 ppm - 170 images
+800 ppm - 118 images
+1000 ppm - 170 images
+
+
+
+uv run plantnet_treatment_pilot/train_unlabeled.py --pretrain both
+Device: cuda; pretraining: both
+Pilot: image-level 80/10/10 splits; unknown tree relationships are not controlled.
+residue_bin train: 167 images | {'high': 56, 'low': 56, 'medium': 55}
+residue_bin validation: 21 images | {'low': 7, 'high': 7, 'medium': 7}
+residue_bin test: 21 images | {'high': 7, 'medium': 7, 'low': 7}
+Excluded 0 treatment images also present in ICP.
+nominal_treatment train: 460 images | {'600': 136, '1000': 136, '400': 94, '800': 94}
+nominal_treatment validation: 57 images | {'600': 17, '1000': 17, '800': 12, '400': 11}
+nominal_treatment test: 58 images | {'1000': 17, '600': 17, '800': 12, '400': 12}
+icp_head | Epoch 01/10 | train loss 1.1111 | train acc 0.3353 | train F1 0.2731 | val loss 1.0834 | val acc 0.5714 | val F1 0.5636 | val UAR 0.5714                                                                                                                 
+icp_head | Epoch 02/10 | train loss 1.0864 | train acc 0.3533 | train F1 0.3490 | val loss 1.0833 | val acc 0.4762 | val F1 0.4279 | val UAR 0.4762                                                                                                                 
+icp_head | Epoch 03/10 | train loss 1.0701 | train acc 0.4850 | train F1 0.4710 | val loss 1.0780 | val acc 0.4762 | val F1 0.4629 | val UAR 0.4762                                                                                                                 
+icp_head | Epoch 04/10 | train loss 1.0646 | train acc 0.4671 | train F1 0.4646 | val loss 1.0737 | val acc 0.3810 | val F1 0.4008 | val UAR 0.3810                                                                                                                 
+icp_head | Epoch 05/10 | train loss 1.0488 | train acc 0.5150 | train F1 0.5125 | val loss 1.0745 | val acc 0.5714 | val F1 0.5554 | val UAR 0.5714                                                                                                                 
+icp_head | Epoch 06/10 | train loss 1.0469 | train acc 0.4611 | train F1 0.4593 | val loss 1.0739 | val acc 0.4286 | val F1 0.4125 | val UAR 0.4286                                                                                                                 
+icp_head | Epoch 07/10 | train loss 1.0441 | train acc 0.4671 | train F1 0.4603 | val loss 1.0709 | val acc 0.4286 | val F1 0.3996 | val UAR 0.4286                                                                                                                 
+icp_head | Epoch 08/10 | train loss 1.0252 | train acc 0.4970 | train F1 0.4758 | val loss 1.0641 | val acc 0.2857 | val F1 0.2815 | val UAR 0.2857                                                                                                                 
+icp_head | Epoch 09/10 | train loss 1.0219 | train acc 0.4850 | train F1 0.4785 | val loss 1.0651 | val acc 0.4762 | val F1 0.4610 | val UAR 0.4762                                                                                                                 
+icp_head: early stopping after epoch 9.
+icp_full | Epoch 01/40 | train loss 1.1005 | train acc 0.3653 | train F1 0.2719 | val loss 1.0884 | val acc 0.2857 | val F1 0.2005 | val UAR 0.2857                                                                                                                 
+icp_full | Epoch 02/40 | train loss 1.0862 | train acc 0.3832 | train F1 0.2983 | val loss 1.0801 | val acc 0.3810 | val F1 0.3095 | val UAR 0.3810                                                                                                                 
+icp_full | Epoch 03/40 | train loss 1.0730 | train acc 0.4371 | train F1 0.3722 | val loss 1.0716 | val acc 0.2857 | val F1 0.2071 | val UAR 0.2857                                                                                                                 
+icp_full | Epoch 04/40 | train loss 1.0646 | train acc 0.5090 | train F1 0.4682 | val loss 1.0642 | val acc 0.4286 | val F1 0.4078 | val UAR 0.4286                                                                                                                 
+icp_full | Epoch 05/40 | train loss 1.0442 | train acc 0.5389 | train F1 0.5211 | val loss 1.0593 | val acc 0.4286 | val F1 0.3924 | val UAR 0.4286                                                                                                                 
+icp_full | Epoch 06/40 | train loss 1.0398 | train acc 0.5269 | train F1 0.5054 | val loss 1.0529 | val acc 0.3810 | val F1 0.3433 | val UAR 0.3810                                                                                                                 
+icp_full | Epoch 07/40 | train loss 1.0235 | train acc 0.5449 | train F1 0.5290 | val loss 1.0508 | val acc 0.5714 | val F1 0.5679 | val UAR 0.5714                                                                                                                 
+icp_full | Epoch 08/40 | train loss 1.0233 | train acc 0.5629 | train F1 0.5517 | val loss 1.0491 | val acc 0.5714 | val F1 0.5721 | val UAR 0.5714                                                                                                                 
+icp_full | Epoch 09/40 | train loss 0.9959 | train acc 0.6228 | train F1 0.6169 | val loss 1.0441 | val acc 0.5714 | val F1 0.5679 | val UAR 0.5714                                                                                                                 
+icp_full | Epoch 10/40 | train loss 0.9990 | train acc 0.5509 | train F1 0.5442 | val loss 1.0384 | val acc 0.5238 | val F1 0.5090 | val UAR 0.5238                                                                                                                 
+icp_full | Epoch 11/40 | train loss 0.9766 | train acc 0.5868 | train F1 0.5822 | val loss 1.0335 | val acc 0.5714 | val F1 0.5673 | val UAR 0.5714                                                                                                                 
+icp_full | Epoch 12/40 | train loss 0.9673 | train acc 0.6407 | train F1 0.6341 | val loss 1.0346 | val acc 0.4762 | val F1 0.4708 | val UAR 0.4762                                                                                                                 
+icp_full | Epoch 13/40 | train loss 0.9585 | train acc 0.5988 | train F1 0.5967 | val loss 1.0271 | val acc 0.5714 | val F1 0.5721 | val UAR 0.5714                                                                                                                 
+icp_full | Epoch 14/40 | train loss 0.9366 | train acc 0.6048 | train F1 0.5993 | val loss 1.0307 | val acc 0.4762 | val F1 0.4708 | val UAR 0.4762                                                                                                                 
+icp_full | Epoch 15/40 | train loss 0.9174 | train acc 0.6347 | train F1 0.6252 | val loss 1.0221 | val acc 0.5238 | val F1 0.5090 | val UAR 0.5238                                                                                                                 
+icp_full | Epoch 16/40 | train loss 0.9236 | train acc 0.6287 | train F1 0.6148 | val loss 1.0290 | val acc 0.5238 | val F1 0.5370 | val UAR 0.5238                                                                                                                 
+icp_full: early stopping after epoch 16.
+                                                                                                                                                                                                                                                                    
+icp: selected icp_full, epoch 17
+Validation macro-F1: 0.5721 | Test: {'accuracy': 0.5238095238095238, 'macro_f1': 0.42857142857142855, 'uar': 0.5238095238095238, 'recall_low': 0.8571428571428571, 'recall_medium': 0.0, 'recall_high': 0.7142857142857143}
+treatment_full | Epoch 01/5 | train loss 1.3698 | train acc 0.3587 | train F1 0.2599 | val loss 1.3321 | val acc 0.4912 | val F1 0.4420 | val UAR 0.4462                                                                                                            
+treatment_full | Epoch 02/5 | train loss 1.2848 | train acc 0.5370 | train F1 0.5185 | val loss 1.2043 | val acc 0.6140 | val F1 0.5545 | val UAR 0.6142                                                                                                            
+treatment_full | Epoch 03/5 | train loss 1.1819 | train acc 0.6239 | train F1 0.6164 | val loss 1.0808 | val acc 0.6316 | val F1 0.5847 | val UAR 0.6369                                                                                                            
+treatment_full | Epoch 04/5 | train loss 1.0840 | train acc 0.6435 | train F1 0.6187 | val loss 0.9895 | val acc 0.6140 | val F1 0.5503 | val UAR 0.6203                                                                                                            
+treatment_full | Epoch 05/5 | train loss 0.9812 | train acc 0.6935 | train F1 0.6718 | val loss 0.8651 | val acc 0.6667 | val F1 0.6434 | val UAR 0.6560                                                                                                            
+                                                                                                                                                                                                                                                                    
+treatment: selected treatment_full, epoch 5
+Validation macro-F1: 0.6434 | Test: {'accuracy': 0.6379310344827587, 'macro_f1': 0.586180165731088, 'uar': 0.6605392156862745, 'recall_400': 0.8333333333333334, 'recall_600': 1.0, 'recall_800': 0.75, 'recall_1000': 0.058823529411764705}
+icp_head | Epoch 01/10 | train loss 1.0891 | train acc 0.3713 | train F1 0.3514 | val loss 1.0826 | val acc 0.4286 | val F1 0.4444 | val UAR 0.4286                                                                                                                 
+icp_head | Epoch 02/10 | train loss 1.0316 | train acc 0.5210 | train F1 0.5206 | val loss 1.0744 | val acc 0.4286 | val F1 0.3976 | val UAR 0.4286                                                                                                                 
+icp_head | Epoch 03/10 | train loss 0.9851 | train acc 0.5629 | train F1 0.5498 | val loss 1.0618 | val acc 0.5238 | val F1 0.5078 | val UAR 0.5238                                                                                                                 
+icp_head | Epoch 04/10 | train loss 0.9720 | train acc 0.5749 | train F1 0.5712 | val loss 1.0522 | val acc 0.4286 | val F1 0.4264 | val UAR 0.4286                                                                                                                 
+icp_head | Epoch 05/10 | train loss 0.9283 | train acc 0.5449 | train F1 0.5291 | val loss 1.0497 | val acc 0.4762 | val F1 0.4680 | val UAR 0.4762                                                                                                                 
+icp_head | Epoch 06/10 | train loss 0.9240 | train acc 0.6347 | train F1 0.6341 | val loss 1.0402 | val acc 0.5714 | val F1 0.5721 | val UAR 0.5714                                                                                                                 
+icp_head | Epoch 07/10 | train loss 0.9064 | train acc 0.6108 | train F1 0.5846 | val loss 1.0407 | val acc 0.4762 | val F1 0.4813 | val UAR 0.4762                                                                                                                 
+icp_head | Epoch 08/10 | train loss 0.8914 | train acc 0.6228 | train F1 0.6194 | val loss 1.0313 | val acc 0.4762 | val F1 0.4840 | val UAR 0.4762                                                                                                                 
+icp_head | Epoch 09/10 | train loss 0.8736 | train acc 0.5868 | train F1 0.5618 | val loss 1.0319 | val acc 0.4762 | val F1 0.4840 | val UAR 0.4762                                                                                                                 
+icp_head | Epoch 10/10 | train loss 0.8509 | train acc 0.6587 | train F1 0.6518 | val loss 1.0280 | val acc 0.4762 | val F1 0.4813 | val UAR 0.4762                                                                                                                 
+icp_full | Epoch 01/40 | train loss 0.9557 | train acc 0.5808 | train F1 0.5792 | val loss 1.0519 | val acc 0.4286 | val F1 0.4337 | val UAR 0.4286                                                                                                                 
+icp_full | Epoch 02/40 | train loss 0.9357 | train acc 0.5988 | train F1 0.5943 | val loss 1.0599 | val acc 0.3810 | val F1 0.3634 | val UAR 0.3810                                                                                                                 
+icp_full | Epoch 03/40 | train loss 0.9296 | train acc 0.6048 | train F1 0.5988 | val loss 1.0472 | val acc 0.4286 | val F1 0.4222 | val UAR 0.4286                                                                                                                 
+icp_full | Epoch 04/40 | train loss 0.9274 | train acc 0.6108 | train F1 0.6099 | val loss 1.0529 | val acc 0.4286 | val F1 0.4222 | val UAR 0.4286                                                                                                                 
+icp_full | Epoch 05/40 | train loss 0.8865 | train acc 0.6168 | train F1 0.6077 | val loss 1.0520 | val acc 0.3810 | val F1 0.3634 | val UAR 0.3810                                                                                                                 
+icp_full | Epoch 06/40 | train loss 0.8738 | train acc 0.6168 | train F1 0.6058 | val loss 1.0547 | val acc 0.4762 | val F1 0.4838 | val UAR 0.4762                                                                                                                 
+icp_full | Epoch 07/40 | train loss 0.8911 | train acc 0.5689 | train F1 0.5653 | val loss 1.0446 | val acc 0.4762 | val F1 0.4838 | val UAR 0.4762                                                                                                                 
+icp_full | Epoch 08/40 | train loss 0.8573 | train acc 0.6407 | train F1 0.6312 | val loss 1.0443 | val acc 0.5238 | val F1 0.5329 | val UAR 0.5238                                                                                                                 
+icp_full: early stopping after epoch 8.
+                                                                                                                                                                                                                                                                    
+icp: selected icp_head, epoch 6
+Validation macro-F1: 0.5721 | Test: {'accuracy': 0.5714285714285714, 'macro_f1': 0.5555555555555555, 'uar': 0.5714285714285715, 'recall_low': 0.7142857142857143, 'recall_medium': 0.2857142857142857, 'recall_high': 0.7142857142857143}
+
+ICP comparison (fractions; multiply by 100 for percent/percentage points):
+                   run  test_accuracy  test_macro_f1  test_recall_low  test_recall_medium  test_recall_high
+    A_matched_baseline       0.523810       0.428571         0.857143            0.000000          0.714286
+B_treatment_pretrained       0.571429       0.555556         0.714286            0.285714          0.714286
+             B_minus_A       0.047619       0.126984        -0.142857            0.285714          0.000000
+
+Results saved to: /home/davidorjuela/dev/agai-reu-pesticide/plantnet_treatment_pilot/results
+
+
+
+Performance dropped when splitting by tree ID:
+uv run plantnet_treatment_pilot/train_unlabeled.py --pretrain both
+Device: cuda; pretraining: both
+ICP: whole-tree holdout shared by A/B. Treatment: image-level holdout.
+ICP train: 169 images; 17 trees; classes={'medium': 57, 'low': 56, 'high': 56}
+  Trees: ['1000 ppm 1', '1000 ppm 2', '1000 ppm 3', '1000 ppm 4', '1000 ppm 5', '400 ppm 1', '400 ppm 2', '400 ppm 3', '600 ppm 1', '600 ppm 2', '600 ppm 3', '600 ppm 5', '800 ppm 1', '800 ppm 3', '800 ppm 4', '800 ppm 5', 'control_tree']
+ICP validation: 20 images; 2 trees; classes={'low': 7, 'high': 7, 'medium': 6}
+  Trees: ['400 ppm 4', '800 ppm 2']
+ICP test: 20 images; 2 trees; classes={'low': 7, 'high': 7, 'medium': 6}
+  Trees: ['400 ppm 5', '600 ppm 4']
+Excluded 0 treatment images also present in ICP.
+nominal_treatment train: 460 images | {'600': 136, '1000': 136, '400': 94, '800': 94}
+nominal_treatment validation: 57 images | {'600': 17, '1000': 17, '800': 12, '400': 11}
+nominal_treatment test: 58 images | {'1000': 17, '600': 17, '800': 12, '400': 12}
+icp_head | Epoch 01/10 | train loss 1.1056 | train acc 0.3432 | train F1 0.2857 | val loss 1.0941 | val acc 0.2500 | val F1 0.2465 | val UAR 0.2540
+icp_head | Epoch 02/10 | train loss 1.0774 | train acc 0.4615 | train F1 0.4609 | val loss 1.0776 | val acc 0.4500 | val F1 0.3529 | val UAR 0.4286
+icp_head | Epoch 03/10 | train loss 1.0708 | train acc 0.3905 | train F1 0.3321 | val loss 1.0707 | val acc 0.3500 | val F1 0.3286 | val UAR 0.3413
+icp_head | Epoch 04/10 | train loss 1.0660 | train acc 0.4320 | train F1 0.3994 | val loss 1.0732 | val acc 0.4000 | val F1 0.3633 | val UAR 0.4206
+icp_head | Epoch 05/10 | train loss 1.0592 | train acc 0.4675 | train F1 0.4585 | val loss 1.0519 | val acc 0.4500 | val F1 0.4166 | val UAR 0.4365
+icp_head | Epoch 06/10 | train loss 1.0499 | train acc 0.4675 | train F1 0.4508 | val loss 1.0511 | val acc 0.4000 | val F1 0.3775 | val UAR 0.4127
+icp_head | Epoch 07/10 | train loss 1.0325 | train acc 0.5207 | train F1 0.5183 | val loss 1.0394 | val acc 0.5000 | val F1 0.3956 | val UAR 0.4762
+icp_head | Epoch 08/10 | train loss 1.0250 | train acc 0.5148 | train F1 0.4885 | val loss 1.0332 | val acc 0.5500 | val F1 0.4964 | val UAR 0.5317
+icp_head | Epoch 09/10 | train loss 1.0187 | train acc 0.5680 | train F1 0.5680 | val loss 1.0358 | val acc 0.4000 | val F1 0.3906 | val UAR 0.4127
+icp_head | Epoch 10/10 | train loss 1.0162 | train acc 0.5148 | train F1 0.5064 | val loss 1.0275 | val acc 0.4500 | val F1 0.4444 | val UAR 0.4444
+icp_full | Epoch 01/40 | train loss 1.0844 | train acc 0.3846 | train F1 0.3134 | val loss 1.0370 | val acc 0.4500 | val F1 0.3278 | val UAR 0.4286
+icp_full | Epoch 02/40 | train loss 1.0553 | train acc 0.4201 | train F1 0.3674 | val loss 1.0525 | val acc 0.3500 | val F1 0.1795 | val UAR 0.3333
+icp_full | Epoch 03/40 | train loss 1.0551 | train acc 0.4083 | train F1 0.3732 | val loss 1.0455 | val acc 0.4500 | val F1 0.3638 | val UAR 0.4365
+icp_full | Epoch 04/40 | train loss 1.0243 | train acc 0.4793 | train F1 0.4677 | val loss 1.0142 | val acc 0.5500 | val F1 0.4343 | val UAR 0.5238
+icp_full | Epoch 05/40 | train loss 1.0140 | train acc 0.4556 | train F1 0.4518 | val loss 1.0025 | val acc 0.5000 | val F1 0.3847 | val UAR 0.4762
+icp_full | Epoch 06/40 | train loss 0.9831 | train acc 0.5503 | train F1 0.5523 | val loss 0.9980 | val acc 0.5500 | val F1 0.5192 | val UAR 0.5317
+icp_full | Epoch 07/40 | train loss 0.9747 | train acc 0.5562 | train F1 0.5546 | val loss 0.9890 | val acc 0.4500 | val F1 0.4226 | val UAR 0.4365
+icp_full | Epoch 08/40 | train loss 0.9367 | train acc 0.6154 | train F1 0.6152 | val loss 0.9596 | val acc 0.6000 | val F1 0.5397 | val UAR 0.5794
+icp_full | Epoch 09/40 | train loss 0.9333 | train acc 0.5621 | train F1 0.5581 | val loss 0.9950 | val acc 0.6000 | val F1 0.4786 | val UAR 0.5714
+icp_full | Epoch 10/40 | train loss 0.9357 | train acc 0.5740 | train F1 0.5666 | val loss 0.9512 | val acc 0.5500 | val F1 0.4343 | val UAR 0.5238
+icp_full | Epoch 11/40 | train loss 0.9126 | train acc 0.6095 | train F1 0.6081 | val loss 0.9624 | val acc 0.4000 | val F1 0.3072 | val UAR 0.3810
+icp_full | Epoch 12/40 | train loss 0.8960 | train acc 0.6213 | train F1 0.6232 | val loss 0.9616 | val acc 0.4500 | val F1 0.3348 | val UAR 0.4286
+icp_full | Epoch 13/40 | train loss 0.8927 | train acc 0.6509 | train F1 0.6536 | val loss 0.9008 | val acc 0.6500 | val F1 0.6464 | val UAR 0.6429
+icp_full | Epoch 14/40 | train loss 0.8637 | train acc 0.6391 | train F1 0.6375 | val loss 1.0048 | val acc 0.4500 | val F1 0.3348 | val UAR 0.4286
+icp_full | Epoch 15/40 | train loss 0.8562 | train acc 0.6154 | train F1 0.6141 | val loss 0.9752 | val acc 0.4500 | val F1 0.3348 | val UAR 0.4286
+icp_full | Epoch 16/40 | train loss 0.8497 | train acc 0.6331 | train F1 0.6343 | val loss 0.8467 | val acc 0.6000 | val F1 0.5815 | val UAR 0.5873
+icp_full | Epoch 17/40 | train loss 0.8092 | train acc 0.6627 | train F1 0.6601 | val loss 0.8954 | val acc 0.6500 | val F1 0.6268 | val UAR 0.6349
+icp_full | Epoch 18/40 | train loss 0.8394 | train acc 0.6213 | train F1 0.6195 | val loss 0.9329 | val acc 0.5000 | val F1 0.4127 | val UAR 0.4762
+icp_full | Epoch 19/40 | train loss 0.8148 | train acc 0.6686 | train F1 0.6688 | val loss 0.8811 | val acc 0.5500 | val F1 0.5395 | val UAR 0.5397
+icp_full | Epoch 20/40 | train loss 0.8412 | train acc 0.6213 | train F1 0.6208 | val loss 0.9787 | val acc 0.5000 | val F1 0.3944 | val UAR 0.4762
+icp_full | Epoch 21/40 | train loss 0.7935 | train acc 0.6805 | train F1 0.6772 | val loss 0.8697 | val acc 0.6000 | val F1 0.4714 | val UAR 0.5714
+icp_full: early stopping after epoch 21.
+                                                                                
+icp: selected icp_full, epoch 23
+Validation macro-F1: 0.6464 | Test: {'accuracy': 0.4, 'macro_f1': 0.362962962962963, 'uar': 0.38888888888888884, 'recall_low': 0.2857142857142857, 'recall_medium': 0.16666666666666666, 'recall_high': 0.7142857142857143}
+treatment_full | Epoch 01/5 | train loss 1.3698 | train acc 0.3587 | train F1 0.2599 | val loss 1.3321 | val acc 0.4912 | val F1 0.4420 | val UAR 0.4462
+treatment_full | Epoch 02/5 | train loss 1.2848 | train acc 0.5370 | train F1 0.5185 | val loss 1.2043 | val acc 0.6140 | val F1 0.5545 | val UAR 0.6142
+treatment_full | Epoch 03/5 | train loss 1.1819 | train acc 0.6239 | train F1 0.6164 | val loss 1.0808 | val acc 0.6316 | val F1 0.5847 | val UAR 0.6369
+treatment_full | Epoch 04/5 | train loss 1.0840 | train acc 0.6435 | train F1 0.6187 | val loss 0.9895 | val acc 0.6140 | val F1 0.5503 | val UAR 0.6203
+treatment_full | Epoch 05/5 | train loss 0.9812 | train acc 0.6935 | train F1 0.6718 | val loss 0.8651 | val acc 0.6667 | val F1 0.6434 | val UAR 0.6560
+                                                                                          
+treatment: selected treatment_full, epoch 5
+Validation macro-F1: 0.6434 | Test: {'accuracy': 0.6379310344827587, 'macro_f1': 0.586180165731088, 'uar': 0.6605392156862745, 'recall_400': 0.8333333333333334, 'recall_600': 1.0, 'recall_800': 0.75, 'recall_1000': 0.058823529411764705}
+icp_head | Epoch 01/10 | train loss 1.1078 | train acc 0.3550 | train F1 0.3188 | val loss 1.0813 | val acc 0.4000 | val F1 0.3385 | val UAR 0.4127
+icp_head | Epoch 02/10 | train loss 1.0197 | train acc 0.5503 | train F1 0.5410 | val loss 1.0312 | val acc 0.5000 | val F1 0.3905 | val UAR 0.4762
+icp_head | Epoch 03/10 | train loss 0.9939 | train acc 0.5562 | train F1 0.4993 | val loss 1.0093 | val acc 0.4500 | val F1 0.3704 | val UAR 0.4603
+icp_head | Epoch 04/10 | train loss 0.9782 | train acc 0.5444 | train F1 0.5120 | val loss 0.9759 | val acc 0.6500 | val F1 0.5841 | val UAR 0.6270
+icp_head | Epoch 05/10 | train loss 0.9665 | train acc 0.5385 | train F1 0.4861 | val loss 0.9489 | val acc 0.6000 | val F1 0.5945 | val UAR 0.6032
+icp_head | Epoch 06/10 | train loss 0.9440 | train acc 0.5799 | train F1 0.5588 | val loss 0.9201 | val acc 0.6500 | val F1 0.5841 | val UAR 0.6270
+icp_head | Epoch 07/10 | train loss 0.9230 | train acc 0.5562 | train F1 0.5028 | val loss 0.9063 | val acc 0.7000 | val F1 0.6222 | val UAR 0.6746
+icp_head | Epoch 08/10 | train loss 0.8869 | train acc 0.5562 | train F1 0.5354 | val loss 0.8968 | val acc 0.7500 | val F1 0.7453 | val UAR 0.7460
+icp_head | Epoch 09/10 | train loss 0.8723 | train acc 0.6805 | train F1 0.6824 | val loss 0.8753 | val acc 0.8000 | val F1 0.7905 | val UAR 0.7937
+icp_head | Epoch 10/10 | train loss 0.8782 | train acc 0.6272 | train F1 0.6245 | val loss 0.8732 | val acc 0.7500 | val F1 0.7309 | val UAR 0.7381
+icp_full | Epoch 01/40 | train loss 0.9474 | train acc 0.5621 | train F1 0.5573 | val loss 0.9503 | val acc 0.6500 | val F1 0.6215 | val UAR 0.6587
+icp_full | Epoch 02/40 | train loss 0.9000 | train acc 0.5858 | train F1 0.5841 | val loss 0.9450 | val acc 0.7000 | val F1 0.6638 | val UAR 0.7063
+icp_full | Epoch 03/40 | train loss 0.9217 | train acc 0.5858 | train F1 0.5822 | val loss 0.9735 | val acc 0.6000 | val F1 0.5633 | val UAR 0.5952
+icp_full | Epoch 04/40 | train loss 0.9091 | train acc 0.6331 | train F1 0.6293 | val loss 0.8821 | val acc 0.6500 | val F1 0.6239 | val UAR 0.6349
+icp_full | Epoch 05/40 | train loss 0.9095 | train acc 0.5917 | train F1 0.5892 | val loss 0.9089 | val acc 0.6000 | val F1 0.5704 | val UAR 0.5873
+icp_full | Epoch 06/40 | train loss 0.8714 | train acc 0.6686 | train F1 0.6674 | val loss 0.8545 | val acc 0.8000 | val F1 0.8009 | val UAR 0.8016
+icp_full | Epoch 07/40 | train loss 0.8484 | train acc 0.6213 | train F1 0.6232 | val loss 0.9144 | val acc 0.6500 | val F1 0.6274 | val UAR 0.6429
+icp_full | Epoch 08/40 | train loss 0.8395 | train acc 0.6154 | train F1 0.6129 | val loss 0.8207 | val acc 0.7000 | val F1 0.6786 | val UAR 0.6905
+icp_full | Epoch 09/40 | train loss 0.8259 | train acc 0.6391 | train F1 0.6317 | val loss 0.8673 | val acc 0.6500 | val F1 0.6239 | val UAR 0.6349
+icp_full | Epoch 10/40 | train loss 0.8468 | train acc 0.6154 | train F1 0.6074 | val loss 0.8290 | val acc 0.6000 | val F1 0.5667 | val UAR 0.5873
+icp_full | Epoch 11/40 | train loss 0.8156 | train acc 0.6450 | train F1 0.6421 | val loss 0.8583 | val acc 0.6000 | val F1 0.5667 | val UAR 0.5873
+icp_full | Epoch 12/40 | train loss 0.7902 | train acc 0.7041 | train F1 0.7056 | val loss 0.8832 | val acc 0.6000 | val F1 0.5667 | val UAR 0.5873
+icp_full | Epoch 13/40 | train loss 0.8122 | train acc 0.6746 | train F1 0.6760 | val loss 0.7604 | val acc 0.6500 | val F1 0.6148 | val UAR 0.6349
+icp_full | Epoch 14/40 | train loss 0.7632 | train acc 0.6864 | train F1 0.6853 | val loss 0.9632 | val acc 0.5500 | val F1 0.4955 | val UAR 0.5317
+icp_full: early stopping after epoch 14.
+                                                                                          
+icp: selected icp_full, epoch 16
+Validation macro-F1: 0.8009 | Test: {'accuracy': 0.4, 'macro_f1': 0.3956043956043956, 'uar': 0.3968253968253968, 'recall_low': 0.2857142857142857, 'recall_medium': 0.3333333333333333, 'recall_high': 0.5714285714285714}
+
+ICP comparison (fractions; multiply by 100 for percent/percentage points):
+                   run  test_accuracy  test_macro_f1  test_recall_low  test_recall_medium  test_recall_high
+    A_matched_baseline            0.4       0.362963         0.285714            0.166667          0.714286
+B_treatment_pretrained            0.4       0.395604         0.285714            0.333333          0.571429
+             B_minus_A            0.0       0.032641         0.000000            0.166667         -0.142857
+
+Results saved to: /home/davidorjuela/dev/agai-reu-pesticide/plantnet_treatment_pilot/results_tree_split
+
+
+
+20 epoch run:
+uv run plantnet_treatment_pilot/train_unlabeled.py --pretrain both
+Device: cuda; pretraining: both
+ICP: whole-tree holdout shared by A/B. Treatment: image-level holdout.
+ICP train: 169 images; 17 trees; classes={'medium': 57, 'low': 56, 'high': 56}
+  Trees: ['1000 ppm 1', '1000 ppm 2', '1000 ppm 3', '1000 ppm 4', '1000 ppm 5', '400 ppm 1', '400 ppm 2', '400 ppm 3', '600 ppm 1', '600 ppm 2', '600 ppm 3', '600 ppm 5', '800 ppm 1', '800 ppm 3', '800 ppm 4', '800 ppm 5', 'control_tree']
+ICP validation: 20 images; 2 trees; classes={'low': 7, 'high': 7, 'medium': 6}
+  Trees: ['400 ppm 4', '800 ppm 2']
+ICP test: 20 images; 2 trees; classes={'low': 7, 'high': 7, 'medium': 6}
+  Trees: ['400 ppm 5', '600 ppm 4']
+Excluded 0 treatment images also present in ICP.
+nominal_treatment train: 460 images | {'600': 136, '1000': 136, '400': 94, '800': 94}
+nominal_treatment validation: 57 images | {'600': 17, '1000': 17, '800': 12, '400': 11}
+nominal_treatment test: 58 images | {'1000': 17, '600': 17, '800': 12, '400': 12}
+icp_head | Epoch 01/10 | train loss 1.1056 | train acc 0.3432 | train F1 0.2857 | val loss 1.0941 | val acc 0.2500 | val F1 0.2465 | val UAR 0.2540
+icp_head | Epoch 02/10 | train loss 1.0774 | train acc 0.4615 | train F1 0.4609 | val loss 1.0776 | val acc 0.4500 | val F1 0.3529 | val UAR 0.4286
+icp_head | Epoch 03/10 | train loss 1.0708 | train acc 0.3905 | train F1 0.3321 | val loss 1.0707 | val acc 0.3500 | val F1 0.3286 | val UAR 0.3413
+icp_head | Epoch 04/10 | train loss 1.0660 | train acc 0.4320 | train F1 0.3994 | val loss 1.0732 | val acc 0.4000 | val F1 0.3633 | val UAR 0.4206
+icp_head | Epoch 05/10 | train loss 1.0592 | train acc 0.4675 | train F1 0.4585 | val loss 1.0519 | val acc 0.4500 | val F1 0.4166 | val UAR 0.4365
+icp_head | Epoch 06/10 | train loss 1.0499 | train acc 0.4675 | train F1 0.4508 | val loss 1.0511 | val acc 0.4000 | val F1 0.3775 | val UAR 0.4127
+icp_head | Epoch 07/10 | train loss 1.0325 | train acc 0.5207 | train F1 0.5183 | val loss 1.0394 | val acc 0.5000 | val F1 0.3956 | val UAR 0.4762
+icp_head | Epoch 08/10 | train loss 1.0250 | train acc 0.5148 | train F1 0.4885 | val loss 1.0332 | val acc 0.5500 | val F1 0.4964 | val UAR 0.5317
+icp_head | Epoch 09/10 | train loss 1.0187 | train acc 0.5680 | train F1 0.5680 | val loss 1.0358 | val acc 0.4000 | val F1 0.3906 | val UAR 0.4127
+icp_head | Epoch 10/10 | train loss 1.0162 | train acc 0.5148 | train F1 0.5064 | val loss 1.0275 | val acc 0.4500 | val F1 0.4444 | val UAR 0.4444
+icp_full | Epoch 01/40 | train loss 1.0844 | train acc 0.3846 | train F1 0.3134 | val loss 1.0370 | val acc 0.4500 | val F1 0.3278 | val UAR 0.4286
+icp_full | Epoch 02/40 | train loss 1.0553 | train acc 0.4201 | train F1 0.3674 | val loss 1.0525 | val acc 0.3500 | val F1 0.1795 | val UAR 0.3333
+icp_full | Epoch 03/40 | train loss 1.0551 | train acc 0.4083 | train F1 0.3732 | val loss 1.0455 | val acc 0.4500 | val F1 0.3638 | val UAR 0.4365
+icp_full | Epoch 04/40 | train loss 1.0243 | train acc 0.4793 | train F1 0.4677 | val loss 1.0142 | val acc 0.5500 | val F1 0.4343 | val UAR 0.5238
+icp_full | Epoch 05/40 | train loss 1.0140 | train acc 0.4556 | train F1 0.4518 | val loss 1.0025 | val acc 0.5000 | val F1 0.3847 | val UAR 0.4762
+icp_full | Epoch 06/40 | train loss 0.9831 | train acc 0.5503 | train F1 0.5523 | val loss 0.9980 | val acc 0.5500 | val F1 0.5192 | val UAR 0.5317
+icp_full | Epoch 07/40 | train loss 0.9747 | train acc 0.5562 | train F1 0.5546 | val loss 0.9890 | val acc 0.4500 | val F1 0.4226 | val UAR 0.4365
+icp_full | Epoch 08/40 | train loss 0.9367 | train acc 0.6154 | train F1 0.6152 | val loss 0.9596 | val acc 0.6000 | val F1 0.5397 | val UAR 0.5794
+icp_full | Epoch 09/40 | train loss 0.9333 | train acc 0.5621 | train F1 0.5581 | val loss 0.9950 | val acc 0.6000 | val F1 0.4786 | val UAR 0.5714
+icp_full | Epoch 10/40 | train loss 0.9357 | train acc 0.5740 | train F1 0.5666 | val loss 0.9512 | val acc 0.5500 | val F1 0.4343 | val UAR 0.5238
+icp_full | Epoch 11/40 | train loss 0.9126 | train acc 0.6095 | train F1 0.6081 | val loss 0.9624 | val acc 0.4000 | val F1 0.3072 | val UAR 0.3810
+icp_full | Epoch 12/40 | train loss 0.8960 | train acc 0.6213 | train F1 0.6232 | val loss 0.9616 | val acc 0.4500 | val F1 0.3348 | val UAR 0.4286
+icp_full | Epoch 13/40 | train loss 0.8927 | train acc 0.6509 | train F1 0.6536 | val loss 0.9008 | val acc 0.6500 | val F1 0.6464 | val UAR 0.6429
+icp_full | Epoch 14/40 | train loss 0.8637 | train acc 0.6391 | train F1 0.6375 | val loss 1.0048 | val acc 0.4500 | val F1 0.3348 | val UAR 0.4286
+icp_full | Epoch 15/40 | train loss 0.8562 | train acc 0.6154 | train F1 0.6141 | val loss 0.9752 | val acc 0.4500 | val F1 0.3348 | val UAR 0.4286
+icp_full | Epoch 16/40 | train loss 0.8497 | train acc 0.6331 | train F1 0.6343 | val loss 0.8467 | val acc 0.6000 | val F1 0.5815 | val UAR 0.5873
+icp_full | Epoch 17/40 | train loss 0.8092 | train acc 0.6627 | train F1 0.6601 | val loss 0.8954 | val acc 0.6500 | val F1 0.6268 | val UAR 0.6349
+icp_full | Epoch 18/40 | train loss 0.8394 | train acc 0.6213 | train F1 0.6195 | val loss 0.9329 | val acc 0.5000 | val F1 0.4127 | val UAR 0.4762
+icp_full | Epoch 19/40 | train loss 0.8148 | train acc 0.6686 | train F1 0.6688 | val loss 0.8811 | val acc 0.5500 | val F1 0.5395 | val UAR 0.5397
+icp_full | Epoch 20/40 | train loss 0.8412 | train acc 0.6213 | train F1 0.6208 | val loss 0.9787 | val acc 0.5000 | val F1 0.3944 | val UAR 0.4762
+icp_full | Epoch 21/40 | train loss 0.7935 | train acc 0.6805 | train F1 0.6772 | val loss 0.8697 | val acc 0.6000 | val F1 0.4714 | val UAR 0.5714
+icp_full: early stopping after epoch 21.
+                                                                                
+icp: selected icp_full, epoch 23
+Validation macro-F1: 0.6464 | Test: {'accuracy': 0.4, 'macro_f1': 0.362962962962963, 'uar': 0.38888888888888884, 'recall_low': 0.2857142857142857, 'recall_medium': 0.16666666666666666, 'recall_high': 0.7142857142857143}
+treatment_full | Epoch 01/20 | train loss 1.3698 | train acc 0.3587 | train F1 0.2599 | val loss 1.3321 | val acc 0.4912 | val F1 0.4420 | val UAR 0.4462
+treatment_full | Epoch 02/20 | train loss 1.2848 | train acc 0.5370 | train F1 0.5185 | val loss 1.2043 | val acc 0.6140 | val F1 0.5545 | val UAR 0.6142
+treatment_full | Epoch 03/20 | train loss 1.1819 | train acc 0.6239 | train F1 0.6164 | val loss 1.0808 | val acc 0.6316 | val F1 0.5847 | val UAR 0.6369
+treatment_full | Epoch 04/20 | train loss 1.0840 | train acc 0.6435 | train F1 0.6187 | val loss 0.9895 | val acc 0.6140 | val F1 0.5503 | val UAR 0.6203
+treatment_full | Epoch 05/20 | train loss 0.9812 | train acc 0.6935 | train F1 0.6718 | val loss 0.8651 | val acc 0.6667 | val F1 0.6434 | val UAR 0.6560
+treatment_full | Epoch 06/20 | train loss 0.9094 | train acc 0.6652 | train F1 0.6439 | val loss 0.7861 | val acc 0.6667 | val F1 0.6342 | val UAR 0.6744
+treatment_full | Epoch 07/20 | train loss 0.8772 | train acc 0.6848 | train F1 0.6707 | val loss 0.7178 | val acc 0.7018 | val F1 0.6791 | val UAR 0.7137
+treatment_full | Epoch 08/20 | train loss 0.7801 | train acc 0.7109 | train F1 0.7010 | val loss 0.6770 | val acc 0.7018 | val F1 0.6712 | val UAR 0.7198
+treatment_full | Epoch 09/20 | train loss 0.7321 | train acc 0.7196 | train F1 0.7069 | val loss 0.6243 | val acc 0.7368 | val F1 0.7208 | val UAR 0.7266
+treatment_full | Epoch 10/20 | train loss 0.6748 | train acc 0.7717 | train F1 0.7694 | val loss 0.5878 | val acc 0.7719 | val F1 0.7620 | val UAR 0.7621
+treatment_full | Epoch 11/20 | train loss 0.6369 | train acc 0.7652 | train F1 0.7589 | val loss 0.5868 | val acc 0.7544 | val F1 0.7468 | val UAR 0.7517
+treatment_full | Epoch 12/20 | train loss 0.6022 | train acc 0.7565 | train F1 0.7478 | val loss 0.5569 | val acc 0.7895 | val F1 0.7813 | val UAR 0.7872
+treatment_full | Epoch 13/20 | train loss 0.5949 | train acc 0.7739 | train F1 0.7670 | val loss 0.5271 | val acc 0.8246 | val F1 0.8142 | val UAR 0.8185
+treatment_full | Epoch 14/20 | train loss 0.5678 | train acc 0.7891 | train F1 0.7833 | val loss 0.5648 | val acc 0.7368 | val F1 0.7100 | val UAR 0.7063
+treatment_full | Epoch 15/20 | train loss 0.5764 | train acc 0.7891 | train F1 0.7838 | val loss 0.5116 | val acc 0.7895 | val F1 0.7851 | val UAR 0.7952
+treatment_full | Epoch 16/20 | train loss 0.5545 | train acc 0.7674 | train F1 0.7660 | val loss 0.4886 | val acc 0.8421 | val F1 0.8335 | val UAR 0.8332
+treatment_full | Epoch 17/20 | train loss 0.5080 | train acc 0.8000 | train F1 0.7932 | val loss 0.5605 | val acc 0.7895 | val F1 0.7839 | val UAR 0.7792
+treatment_full | Epoch 18/20 | train loss 0.4843 | train acc 0.8152 | train F1 0.8127 | val loss 0.5043 | val acc 0.8070 | val F1 0.8013 | val UAR 0.8019
+treatment_full | Epoch 19/20 | train loss 0.5036 | train acc 0.7870 | train F1 0.7817 | val loss 0.5226 | val acc 0.7895 | val F1 0.7871 | val UAR 0.7792
+treatment_full | Epoch 20/20 | train loss 0.4671 | train acc 0.8239 | train F1 0.8207 | val loss 0.4592 | val acc 0.8246 | val F1 0.8186 | val UAR 0.8246                                                                
+                                                                                                                                                                                                                         
+treatment: selected treatment_full, epoch 16
+Validation macro-F1: 0.8335 | Test: {'accuracy': 0.7758620689655172, 'macro_f1': 0.7642901692901692, 'uar': 0.7781862745098038, 'recall_400': 0.9166666666666666, 'recall_600': 1.0, 'recall_800': 0.6666666666666666, 'recall_1000': 0.5294117647058824}
+icp_head | Epoch 01/10 | train loss 1.0980 | train acc 0.3728 | train F1 0.3553 | val loss 1.0842 | val acc 0.3500 | val F1 0.3081 | val UAR 0.3571                                                                      
+icp_head | Epoch 02/10 | train loss 0.9884 | train acc 0.5030 | train F1 0.4681 | val loss 1.0440 | val acc 0.4000 | val F1 0.2778 | val UAR 0.3889                                                                      
+icp_head | Epoch 03/10 | train loss 0.9674 | train acc 0.5266 | train F1 0.4912 | val loss 1.0327 | val acc 0.4500 | val F1 0.3704 | val UAR 0.4603                                                                      
+icp_head | Epoch 04/10 | train loss 0.9652 | train acc 0.5444 | train F1 0.5241 | val loss 1.0019 | val acc 0.4000 | val F1 0.3312 | val UAR 0.3889                                                                      
+icp_head | Epoch 05/10 | train loss 0.9598 | train acc 0.5503 | train F1 0.5046 | val loss 0.9804 | val acc 0.4500 | val F1 0.3784 | val UAR 0.4603                                                                      
+icp_head | Epoch 06/10 | train loss 0.9309 | train acc 0.5503 | train F1 0.5346 | val loss 0.9297 | val acc 0.6500 | val F1 0.5854 | val UAR 0.6270                                                                      
+icp_head | Epoch 07/10 | train loss 0.9294 | train acc 0.5385 | train F1 0.4921 | val loss 0.9272 | val acc 0.5500 | val F1 0.4960 | val UAR 0.5556                                                                      
+icp_head | Epoch 08/10 | train loss 0.8838 | train acc 0.5266 | train F1 0.5070 | val loss 0.9155 | val acc 0.5500 | val F1 0.5573 | val UAR 0.5635                                                                      
+icp_head | Epoch 09/10 | train loss 0.8708 | train acc 0.6391 | train F1 0.6413 | val loss 0.8780 | val acc 0.7000 | val F1 0.6996 | val UAR 0.6984                                                                      
+icp_head | Epoch 10/10 | train loss 0.8584 | train acc 0.6331 | train F1 0.6324 | val loss 0.8867 | val acc 0.5500 | val F1 0.5609 | val UAR 0.5556                                                                      
+icp_full | Epoch 01/40 | train loss 0.9692 | train acc 0.5030 | train F1 0.4814 | val loss 0.9147 | val acc 0.4000 | val F1 0.4055 | val UAR 0.4048                                                                      
+icp_full | Epoch 02/40 | train loss 0.8918 | train acc 0.5562 | train F1 0.5449 | val loss 0.9250 | val acc 0.5000 | val F1 0.4966 | val UAR 0.5159                                                                      
+icp_full | Epoch 03/40 | train loss 0.8984 | train acc 0.5976 | train F1 0.5940 | val loss 0.9541 | val acc 0.6500 | val F1 0.6125 | val UAR 0.6508                                                                      
+icp_full | Epoch 04/40 | train loss 0.8966 | train acc 0.5858 | train F1 0.5781 | val loss 0.8427 | val acc 0.7500 | val F1 0.7298 | val UAR 0.7540                                                                      
+icp_full | Epoch 05/40 | train loss 0.8781 | train acc 0.5858 | train F1 0.5826 | val loss 0.8939 | val acc 0.7000 | val F1 0.6796 | val UAR 0.6984                                                                      
+icp_full | Epoch 06/40 | train loss 0.8408 | train acc 0.6331 | train F1 0.6316 | val loss 0.8296 | val acc 0.6000 | val F1 0.6012 | val UAR 0.6111                                                                      
+icp_full | Epoch 07/40 | train loss 0.8251 | train acc 0.6568 | train F1 0.6562 | val loss 0.9187 | val acc 0.6500 | val F1 0.6259 | val UAR 0.6429                                                                      
+icp_full | Epoch 08/40 | train loss 0.8062 | train acc 0.6036 | train F1 0.5970 | val loss 0.8082 | val acc 0.7000 | val F1 0.6889 | val UAR 0.7063                                                                      
+icp_full | Epoch 09/40 | train loss 0.8023 | train acc 0.6746 | train F1 0.6696 | val loss 0.8376 | val acc 0.6000 | val F1 0.5668 | val UAR 0.5873                                                                      
+icp_full | Epoch 10/40 | train loss 0.8285 | train acc 0.6036 | train F1 0.5931 | val loss 0.7879 | val acc 0.6500 | val F1 0.6259 | val UAR 0.6429                                                                      
+icp_full | Epoch 11/40 | train loss 0.7939 | train acc 0.6272 | train F1 0.6268 | val loss 0.8725 | val acc 0.7000 | val F1 0.6889 | val UAR 0.7063                                                                      
+icp_full | Epoch 12/40 | train loss 0.7688 | train acc 0.6568 | train F1 0.6566 | val loss 0.8817 | val acc 0.6500 | val F1 0.6259 | val UAR 0.6429                                                                      
+icp_full: early stopping after epoch 12.
+                                                                                                                                                                                                                         
+icp: selected icp_full, epoch 14
+Validation macro-F1: 0.7298 | Test: {'accuracy': 0.45, 'macro_f1': 0.43210955710955706, 'uar': 0.4444444444444445, 'recall_low': 0.2857142857142857, 'recall_medium': 0.3333333333333333, 'recall_high': 0.7142857142857143}
+
+ICP comparison (fractions; multiply by 100 for percent/percentage points):
+                   run  test_accuracy  test_macro_f1  test_recall_low  test_recall_medium  test_recall_high
+    A_matched_baseline           0.40       0.362963         0.285714            0.166667          0.714286
+B_treatment_pretrained           0.45       0.432110         0.285714            0.333333          0.714286
+             B_minus_A           0.05       0.069147         0.000000            0.166667          0.000000
+
+Results saved to: /home/davidorjuela/dev/agai-reu-pesticide/plantnet_treatment_pilot/results_tree_split_20epochs
+
+
+
+
+| Run | Best ICP validation macro-F1 | ICP test accuracy | ICP test macro-F1 |
+|---|---:|---:|---:|
+| A: no treatment training | 0.646 | 40% — 8/20 | 0.363 |
+| B: 5 treatment epochs | **0.801** | 40% — 8/20 | 0.396 |
+| B: 20 treatment epochs | 0.730 | **45% — 9/20** | **0.432** |
+
+Longer training substantially improved the treatment task: its test accuracy increased from 63.8% to 77.6%, and macro-F1 from 0.586 to 0.764. 
+The selected treatment checkpoint was epoch 16, not 20. In particular, 1000-ppm recall improved from 1/17 to 9/17.
+
+The most striking result is B’s 0.801 validation macro-F1 versus 0.396 test macro-F1. Validation and test each contain two different trees. 
+This suggests that performance is sensitive to which trees are held out, although the logs alone cannot tell us whether appearance differences, residue distributions, checkpoint-selection noise, or another issue dominates.
