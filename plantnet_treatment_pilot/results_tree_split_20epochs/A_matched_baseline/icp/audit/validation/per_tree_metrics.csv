@@ -1,0 +1,3 @@
+tree_id,n,accuracy,macro_f1,recall_low,recall_medium,recall_high,support_low,support_medium,support_high
+400 ppm 4,10,0.9,0.9220779220779219,1.0,0.75,1.0,5,4,1
+800 ppm 2,10,0.4,0.2222222222222222,0.0,0.0,0.6666666666666666,2,2,6

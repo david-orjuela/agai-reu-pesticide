@@ -1,0 +1,16 @@
+split,label,extension,images
+test,1000,.heic,8
+test,1000,.jpg,9
+test,400,.heic,12
+test,600,.jpg,17
+test,800,.heic,12
+train,1000,.heic,63
+train,1000,.jpg,73
+train,400,.heic,94
+train,600,.jpg,136
+train,800,.heic,94
+validation,1000,.heic,10
+validation,1000,.jpg,7
+validation,400,.heic,11
+validation,600,.jpg,17
+validation,800,.heic,12
