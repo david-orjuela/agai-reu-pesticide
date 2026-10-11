@@ -1,0 +1,22 @@
+tree_id,split
+400 ppm 5,test
+600 ppm 4,test
+1000 ppm 1,train
+1000 ppm 2,train
+1000 ppm 3,train
+1000 ppm 4,train
+1000 ppm 5,train
+400 ppm 1,train
+400 ppm 2,train
+400 ppm 3,train
+600 ppm 1,train
+600 ppm 2,train
+600 ppm 3,train
+600 ppm 5,train
+800 ppm 1,train
+800 ppm 3,train
+800 ppm 4,train
+800 ppm 5,train
+control_tree,train
+400 ppm 4,validation
+800 ppm 2,validation

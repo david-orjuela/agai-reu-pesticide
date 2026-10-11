@@ -4,14 +4,16 @@ Run both matched experiments (default): python train_unlabeled.py
 Run only A: python train_unlabeled.py --pretrain off
 Run only B: python train_unlabeled.py --pretrain on
 
-Edit the paths below for your machine. Splits are stratified by image, 80/10/10;
-no tree grouping or cross-validation. Unknown tree IDs are saved as "unknown".
+Edit the paths below for your machine. ICP uses one approximately 80/10/10
+tree-separated split shared by A and B. Treatment uses an image-level stratified
+split because its tree IDs are unknown. There is no cross-validation.
 Treatment labels are nominal application concentrations, not ICP measurements.
 """
 
 import argparse
 import json
 import random
+import re
 import urllib.request
 from pathlib import Path
 
@@ -25,6 +27,14 @@ import pandas as pd
 import torch
 import torch.nn as nn
 from PIL import Image, ImageOps
+
+try:
+    from pillow_heif import register_heif_opener
+except ImportError:
+    HEIF_AVAILABLE = False
+else:
+    register_heif_opener()  # Module-level registration also supports spawned workers.
+    HEIF_AVAILABLE = True
 from sklearn.metrics import (
     accuracy_score,
     classification_report,
@@ -37,13 +47,10 @@ from torch.utils.data import DataLoader, Dataset
 from torchvision import transforms
 from torchvision.models import resnet18
 from tqdm import tqdm
-from pillow_heif import register_heif_opener
-
-register_heif_opener()
 
 PROJECT_ROOT = Path("/home/davidorjuela/dev/agai-reu-pesticide")
 CSV_PATH = PROJECT_ROOT / "anthony/master_icp.csv"
-OUTPUT_DIR = PROJECT_ROOT / "plantnet_treatment_pilot/results"
+OUTPUT_DIR = PROJECT_ROOT / "plantnet_treatment_pilot/results_tree_split_20epochs"
 TREATMENT_CSV_PATH = (
     PROJECT_ROOT / "datasets/kocide_application_2025/nominal_treatment.csv"
 )
@@ -51,10 +58,11 @@ TREATMENT_CSV_PATH = (
 PRETRAINING = "both"
 TREATMENT_LABEL_COLUMN = "nominal_treatment"
 TREATMENT_CLASS_NAMES = ("400", "600", "800", "1000")
-TREATMENT_EPOCHS = 5
+TREATMENT_EPOCHS = 20
 TREATMENT_LEARNING_RATE = 1e-4
-ICP_HEAD_SEED = 43
+ICP_HEAD_SEED = 43  # Retain the pilot initialization; only the ICP split changes.
 TREE_ID_COLUMN = "tree_id"
+TREE_SPLIT_CANDIDATES = 2000  # Fixed metadata-only class balancing; never model scores.
 
 PRETRAINED_DIR = PROJECT_ROOT / "anthony/pretrained"
 PLANTNET_WEIGHTS_PATH = PRETRAINED_DIR / "plantnet_resnet18.pth"
@@ -312,6 +320,10 @@ def load_metadata(csv_path, label_column, class_names):
         )
     if data[IMAGE_COLUMN].duplicated().any():
         raise ValueError(f"{csv_path}: duplicate image paths.")
+    if (not HEIF_AVAILABLE and
+            data[IMAGE_COLUMN].map(lambda path: Path(path).suffix.lower()).isin(
+                [".heic", ".heif"]).any()):
+        raise ImportError("HEIC images require pillow-heif. Run: uv add pillow-heif")
     if TREE_ID_COLUMN not in data:
         data[TREE_ID_COLUMN] = "unknown"
     else:
@@ -345,6 +357,89 @@ def split_metadata(data, label_column, class_names):
             raise ValueError(f"{label_column}: {name} split is missing classes.")
         print(f"{label_column} {name}: {len(frame)} images | "
               f"{frame[label_column].value_counts().to_dict()}")
+    return splits
+
+
+def assign_icp_tree_ids(data):
+    """Decode treatment/tree/leaf IDs; all control leaves belong to one tree."""
+    if SAMPLE_ID_COLUMN not in data or data[SAMPLE_ID_COLUMN].isna().any():
+        raise ValueError("ICP requires a nonmissing sample_id for every image.")
+    data = data.copy()
+    tree_ids = []
+    for sample_id in data[SAMPLE_ID_COLUMN]:
+        value = str(sample_id).strip().lower()
+        match = re.fullmatch(r"(\d+)\s+ppm\s+(\d+)\s+(\d+)", value)
+        if match:
+            treatment, tree, _leaf = map(int, match.groups())
+            tree_ids.append(f"{treatment} ppm {tree}")
+        elif re.fullmatch(r"c\s*\d+", value):
+            # User-confirmed: independent control tree; C1 deliberately omitted.
+            tree_ids.append("control_tree")
+        else:
+            raise ValueError(
+                f"Cannot derive tree_id from sample_id {sample_id!r}. "
+                "Expected '800 ppm 1 2' or a control leaf such as 'c 2'. "
+                "Resolve its tree identity before splitting; no image-level fallback."
+            )
+    data[TREE_ID_COLUMN] = tree_ids
+    if data[IMAGE_COLUMN].duplicated().any():
+        raise ValueError("Duplicate ICP image paths would invalidate split accounting.")
+    return data
+
+
+def split_icp_by_tree(data):
+    """Choose one fixed whole-tree holdout, approximately balancing residue classes.
+
+    Round validation/test tree counts to the nearest integer (at least one each).
+    Among a fixed number of seeded random assignments, retain the one whose
+    per-split class proportions are closest to the full dataset. Every split must
+    contain every class. This uses labels only for split construction, never
+    predictions, losses, or model performance. Row order follows the input CSV.
+    """
+    data = assign_icp_tree_ids(data)
+    trees = sorted(data[TREE_ID_COLUMN].unique())
+    n_trees = len(trees)
+    n_val = max(1, round(n_trees * VALIDATION_FRACTION))
+    n_test = max(1, round(n_trees * TEST_FRACTION))
+    n_train = n_trees - n_val - n_test
+    if n_train < 1:
+        raise ValueError("At least three independent ICP trees are required.")
+    counts = pd.crosstab(data[TREE_ID_COLUMN], data[LABEL_COLUMN]).reindex(
+        index=trees, columns=CLASS_NAMES, fill_value=0,
+    ).to_numpy(dtype=float)
+    overall_proportions = counts.sum(axis=0) / counts.sum()
+    rng = np.random.default_rng(SEED)
+    best_score = float("inf")
+    best_groups = None
+    for _ in range(TREE_SPLIT_CANDIDATES):
+        order = rng.permutation(n_trees)
+        groups = (order[:n_train], order[n_train:n_train + n_val],
+                  order[n_train + n_val:])
+        split_counts = np.stack([counts[group].sum(axis=0) for group in groups])
+        if np.any(split_counts == 0):
+            continue
+        proportions = split_counts / split_counts.sum(axis=1, keepdims=True)
+        score = float(np.abs(proportions - overall_proportions).mean())
+        if score < best_score:
+            best_score, best_groups = score, groups
+    if best_groups is None:
+        raise ValueError(
+            "No candidate tree split contains every residue class in each subset. "
+            "Inspect tree/class counts or revise the holdout fractions; do not "
+            "fall back to splitting leaves from the same tree."
+        )
+    tree_sets = [{trees[int(i)] for i in group} for group in best_groups]
+    if any(tree_sets[i] & tree_sets[j] for i in range(3) for j in range(i)):
+        raise RuntimeError("ICP tree overlap detected.")
+    splits = tuple(data.loc[data[TREE_ID_COLUMN].isin(group)].reset_index(drop=True)
+                   for group in tree_sets)
+    if sum(map(len, splits)) != len(data):
+        raise RuntimeError("ICP split does not cover each image exactly once.")
+    for name, frame in zip(("train", "validation", "test"), splits):
+        print(f"ICP {name}: {len(frame)} images; "
+              f"{frame[TREE_ID_COLUMN].nunique()} trees; "
+              f"classes={frame[LABEL_COLUMN].value_counts().to_dict()}")
+        print(f"  Trees: {sorted(frame[TREE_ID_COLUMN].unique())}")
     return splits
 
 
@@ -732,8 +827,12 @@ def train_task(model, splits, label_column, class_names, output_dir, device, tre
         "validation_size": len(splits[1]),
         "test_size": len(splits[2]),
         "seed": SEED,
-        "split_unit": "image",
-        "tree_separated": False,
+        "split_unit": "image" if treatment else "tree",
+        "tree_separated": not treatment,
+        "tree_counts": None if treatment else {
+            name: int(frame[TREE_ID_COLUMN].nunique())
+            for name, frame in zip(("train", "validation", "test"), splits)
+        },
     }
     (output_dir / "metrics.json").write_text(json.dumps(metrics, indent=2))
     prediction_rows = splits[2].iloc[row_indices].reset_index(drop=True).copy()
@@ -786,11 +885,17 @@ def main():
     OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
     print(f"Device: {device}; pretraining: {args.pretrain}")
-    print("Pilot: image-level 80/10/10 splits; unknown tree relationships are not controlled.")
+    print("ICP: whole-tree holdout shared by A/B. Treatment: image-level holdout.")
     icp_data = load_metadata(CSV_PATH, LABEL_COLUMN, CLASS_NAMES)
     # Split ONCE and pass these exact same frames to A and B.
-    icp_splits = split_metadata(icp_data, LABEL_COLUMN, CLASS_NAMES)
+    icp_splits = split_icp_by_tree(icp_data)
     save_splits(icp_splits, OUTPUT_DIR / "shared_icp_splits")
+    (OUTPUT_DIR / "shared_icp_splits" / "tree_assignments.csv").write_text(
+        pd.concat([frame.assign(split=name) for name, frame in
+                   zip(("train", "validation", "test"), icp_splits)])[
+            [TREE_ID_COLUMN, "split"]].drop_duplicates().sort_values(
+                ["split", TREE_ID_COLUMN]).to_csv(index=False)
+    )
     treatment_splits = None
     if args.pretrain in ("on", "both"):
         treatment_data = load_metadata(
@@ -819,9 +924,22 @@ def main():
         "plantnet_weights": str(PLANTNET_WEIGHTS_PATH),
         "seed": SEED,
         "icp_head_seed": ICP_HEAD_SEED,
-        "split_unit": "image",
-        "split_fractions": [0.8, VALIDATION_FRACTION, TEST_FRACTION],
-        "tree_separated": False,
+        "icp_split_unit": "tree",
+        "icp_tree_separated": True,
+        "treatment_split_unit": "image",
+        "treatment_tree_separated": False,
+        "target_split_fractions": [1 - VALIDATION_FRACTION - TEST_FRACTION,
+                                   VALIDATION_FRACTION, TEST_FRACTION],
+        "tree_split_candidates": TREE_SPLIT_CANDIDATES,
+        "tree_split_selection": "minimum mean absolute deviation of class proportions; "
+                                "all classes required in each split; metadata only",
+        "control_group": "control_tree (all c leaves; C1 intentionally absent)",
+        "icp_splits": {
+            name: {"images": len(frame),
+                   "trees": sorted(frame[TREE_ID_COLUMN].unique()),
+                   "class_counts": frame[LABEL_COLUMN].value_counts().to_dict()}
+            for name, frame in zip(("train", "validation", "test"), icp_splits)
+        },
         "icp_classes": CLASS_NAMES,
         "treatment_classes": TREATMENT_CLASS_NAMES,
         "treatment_epochs": TREATMENT_EPOCHS,
@@ -866,8 +984,10 @@ def main():
             "B_minus_A": rows[-1],
             "historical_accuracy_target": 0.61,
             "interpretation": "Use matched ICP B versus A; treatment accuracy alone "
-                              "is not success. This is an image-split pilot, not a "
-                              "tree-separated or cross-validated estimate.",
+                              "is not success. ICP splits are tree-separated; treatment "
+                              "tree identities are unknown, so cross-stage tree overlap "
+                              "cannot be ruled out. This is a single holdout, not "
+                              "cross-validation.",
         }, indent=2))
         print("\nICP comparison (fractions; multiply by 100 for percent/percentage points):")
         print(comparison.to_string(index=False))

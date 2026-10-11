@@ -1,0 +1,21 @@
+image_path,sample_id,nominal_treatment,total_mg,area_cm2,mg_cm2,residue_bin,tree_id,split
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/4-5-6_jpg.rf.cdf55b62908d2bd254ba52cc77468e3d.jpg,400 ppm 5 6,400,9.343,2.938466038,3.179550105,medium,400 ppm 5,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/6-4-1_jpg.rf.70d7e3caff1921a03698b8bbeb6faebe.jpg,600 ppm 4 1,600,10.42,4.51898,2.305830077,low,600 ppm 4,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/4-5-4_jpg.rf.e0b5766d894189df8d25801e7511075f.jpg,400 ppm 5 4,400,10.72,4.644651585,2.308031034,low,400 ppm 5,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/4-5-2_jpg.rf.d2ef2c1c73ee32de92749c5e41eb6e99.jpg,400 ppm 5 2,400,12.71,5.389983564,2.358077692,low,400 ppm 5,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/4-5-5_jpg.rf.c9823a9242e57368798de69daa22497f.jpg,400 ppm 5 5,400,15.43,3.892126966,3.964413323,high,400 ppm 5,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/4-5-10_jpg.rf.a4927e8bb5d8eeb32097d2f28c9b56b2.jpg,400 ppm 5 10,400,21.65,3.52,6.150568182,high,400 ppm 5,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/6-4-2_jpg.rf.f158a661762c8bb6073d5927e3e53cdc.jpg,600 ppm 4 2,600,13.46,4.79375,2.807822686,medium,600 ppm 4,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/6-4-6_jpg.rf.55601ecd381d5f90ad8d40609cbf1510.jpg,600 ppm 4 6,600,16.38,5.613571205,2.917928606,medium,600 ppm 4,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/6-4-3_jpg.rf.3ced916552e2be1e4cac14b5aea34d3c.jpg,600 ppm 4 3,600,15.13,5.252290503,2.880647975,medium,600 ppm 4,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/6-4-4_jpg.rf.cdc36adf631aec1c4a51b4a17d090214.jpg,600 ppm 4 4,600,20.85,4.415054869,4.722478116,high,600 ppm 4,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/6-4-5_jpg.rf.f59c4a97cf951c06e71dd90cd274f19d.jpg,600 ppm 4 5,600,6.657,2.173992367,3.062108267,medium,600 ppm 4,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/4-5-7_jpg.rf.f875d04d33ca0fb81df9480d4d7bd4be.jpg,400 ppm 5 7,400,11.12,4.596751345,2.419099743,low,400 ppm 5,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/6-4-9_jpg.rf.97cfe6f3dd1f9ba33fe5f9513f7db07d.jpg,600 ppm 4 9,600,29.81,4.418563975,6.74653579,high,600 ppm 4,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/4-5-8_jpg.rf.24baddef2af8a5e6642ad8d7de1ff17f.jpg,400 ppm 5 8,400,17.41,8.867686447,1.963308029,low,400 ppm 5,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/6-4-8_jpg.rf.25ced2e644f6a21d3cc09c242bc77057.jpg,600 ppm 4 8,600,15.7,2.821890796,5.563645491,high,600 ppm 4,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/6-4-10_jpg.rf.2d7599adc71ef58e7de1de856145193e.jpg,600 ppm 4 10,600,16.17,10.10916516,1.599538611,low,600 ppm 4,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/4-5-3_jpg.rf.785c3dfca725f50241be7b3968ea78a7.jpg,400 ppm 5 3,400,21.8,5.089484213,4.283341707,high,400 ppm 5,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/6-4-7_jpg.rf.2307209e71dcb06e2b087016a5e90715.jpg,600 ppm 4 7,600,12.11,3.525967006,3.434518809,medium,600 ppm 4,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/4-5-9_jpg.rf.6d5b02e3c6f23dabec1c700df8fe9abb.jpg,400 ppm 5 9,400,16.64,3.365215202,4.94470606,high,400 ppm 5,test
+/home/davidorjuela/dev/agai-reu-pesticide/anthony/largest_leaf_crop/4-5-1_jpg.rf.4ea2493b40605cc38cdcd201f78de615.jpg,400 ppm 5 1,400,23.89,9.600348015,2.488451456,low,400 ppm 5,test

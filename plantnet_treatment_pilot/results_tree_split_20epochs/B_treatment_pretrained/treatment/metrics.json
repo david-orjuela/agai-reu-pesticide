@@ -1,0 +1,73 @@
+{
+  "task": "treatment",
+  "backbone": "plantnet300k_resnet18_multiscale_tiles",
+  "pretrained_weights": "/home/davidorjuela/dev/agai-reu-pesticide/anthony/pretrained/plantnet_resnet18.pth",
+  "best_epoch": 16,
+  "best_stage": "treatment_full",
+  "best_validation_macro_f1": 0.8335218253968253,
+  "test_accuracy": 0.7758620689655172,
+  "test_macro_f1": 0.7642901692901692,
+  "test_uar": 0.7781862745098038,
+  "test_recall_400": 0.9166666666666666,
+  "test_recall_600": 1.0,
+  "test_recall_800": 0.6666666666666666,
+  "test_recall_1000": 0.5294117647058824,
+  "classification_report": {
+    "400": {
+      "precision": 0.8461538461538461,
+      "recall": 0.9166666666666666,
+      "f1-score": 0.88,
+      "support": 12.0
+    },
+    "600": {
+      "precision": 0.85,
+      "recall": 1.0,
+      "f1-score": 0.918918918918919,
+      "support": 17.0
+    },
+    "800": {
+      "precision": 0.5714285714285714,
+      "recall": 0.6666666666666666,
+      "f1-score": 0.6153846153846154,
+      "support": 12.0
+    },
+    "1000": {
+      "precision": 0.8181818181818182,
+      "recall": 0.5294117647058824,
+      "f1-score": 0.6428571428571429,
+      "support": 17.0
+    },
+    "accuracy": 0.7758620689655172,
+    "macro avg": {
+      "precision": 0.771441058941059,
+      "recall": 0.7781862745098038,
+      "f1-score": 0.7642901692901692,
+      "support": 58.0
+    },
+    "weighted avg": {
+      "precision": 0.7822427572427572,
+      "recall": 0.7758620689655172,
+      "f1-score": 0.7671518695656627,
+      "support": 58.0
+    }
+  },
+  "class_names": [
+    "400",
+    "600",
+    "800",
+    "1000"
+  ],
+  "class_to_index": {
+    "400": 0,
+    "600": 1,
+    "800": 2,
+    "1000": 3
+  },
+  "train_size": 460,
+  "validation_size": 57,
+  "test_size": 58,
+  "seed": 42,
+  "split_unit": "image",
+  "tree_separated": false,
+  "tree_counts": null
+}
